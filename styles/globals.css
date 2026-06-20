@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* ─── Design Tokens ───────────────────────────────────────────────────────── */
+:root {
+  --bg:      #030712;
+  --bg2:     #0a0f1e;
+  --bg3:     #0d1526;
+  --orange:  #F97316;
+  --orange2: #FB923C;
+  --orange3: #EA580C;
+  --amber:   #FBBF24;
+  --text:    #F1F5F9;
+  --muted:   #94A3B8;
+  --border:  rgba(249, 115, 22, 0.14);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(249,115,22,0.28); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(249,115,22,0.48); }
+
+/* ─── Focus ───────────────────────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid rgba(249,115,22,0.6); outline-offset: 3px; }
+
+/* ─── Typography utilities ────────────────────────────────────────────────── */
+.orange-gradient-text {
+  background: linear-gradient(90deg, #F97316 0%, #FBBF24 50%, #FB923C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Particle canvas ─────────────────────────────────────────────────────── */
+#particle-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ─── Marquee ─────────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover { animation-play-state: paused; }
+
+/* ─── Pulse dot ───────────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.75); }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ─── Research card hover ─────────────────────────────────────────────────── */
+.research-card {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+.research-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(249,115,22,0.07), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.research-card:hover::before { opacity: 1; }
+
+/* ─── Division row hover indicator ───────────────────────────────────────── */
+.division-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, #F97316, #FBBF24);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.division-row:hover::before { opacity: 1; }
+
+/* ─── Bar fill transition ─────────────────────────────────────────────────── */
+.bar-fill {
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Section entrance animation ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Mobile typography scale ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+}
+
+/* ─── Selection color ─────────────────────────────────────────────────────── */
+::selection {
+  background: rgba(249, 115, 22, 0.3);
+  color: #fff;
+}
+
+/* ─── Imagery mosaic ──────────────────────────────────────────────────────── */
+.imagery-mosaic {
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 280px 280px;
+  gap: 8px;
+}
+
+.imagery-tall {
+  grid-row: span 2;
+}
+
+/* ─── Division row grid ───────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .division-row-grid {
+    grid-template-columns: 240px 1fr 32px;
+  }
+}

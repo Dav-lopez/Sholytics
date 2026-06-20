@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sholytics.org/sitemap.xml

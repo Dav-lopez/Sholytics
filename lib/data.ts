@@ -53,7 +53,7 @@ export const MEDAI_STATS = [
   { value: '16.3%', label: 'U.S. digital health CAGR' },
   { value: '$85B',  label: 'U.S. market size by 2025' },
   { value: '$43B',  label: 'U.S. healthcare tech by 2025' },
-  { value: '2026',  label: 'Projected break-even year' },
+  { value: '2027',  label: 'Projected break-even year' },
 ]
 
 // ─── RESEARCH DIVISIONS ──────────────────────────────────────────────────────

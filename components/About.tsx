@@ -50,7 +50,7 @@ export default function About() {
               {[
                 { n: '4',    l: 'Co-Founders'     },
                 { n: '6',    l: 'AI Platforms'    },
-                { n: '2026', l: 'Break-even target'},
+                { n: '2027', l: 'Break-even target'},
               ].map(s => (
                 <div key={s.l}>
                   <div

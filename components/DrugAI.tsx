@@ -1,11 +1,11 @@
 'use client'
 import { motion } from 'framer-motion'
-import { MEDAI_FEATURES, MEDAI_STATS } from '@/lib/data'
+import { DRUGAI_FEATURES, DRUGAI_STATS } from '@/lib/data'
 
-export default function MedAICare() {
+export default function DrugAI() {
   return (
     <section
-      id="medaicare"
+      id="drugai"
       style={{ background: '#0a0f1e', padding: '5rem 0' }}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -22,28 +22,28 @@ export default function MedAICare() {
               className="inline-flex items-center gap-2 px-3 py-1 rounded-md mb-4 font-mono text-[11px] tracking-widest uppercase"
               style={{ background: 'rgba(249,115,22,0.1)', color: '#FB923C', border: '1px solid rgba(249,115,22,0.2)' }}
             >
-              Flagship Product
+              First Product · Prototype
             </div>
             <h2
               className="font-bold leading-tight tracking-tight"
               style={{ fontSize: 'clamp(2.2rem, 4vw, 3.2rem)' }}
             >
-              MedAI Care
+              DrugAI
             </h2>
             <p className="text-orange-400 font-mono text-sm mt-2 mb-5">
-              AI-driven personalized clinical intelligence
+              Medication supply intelligence for pharmacy and procurement teams
             </p>
             <p className="text-slate-400 text-[16px] leading-[1.8] max-w-xl">
-              MedAI Care is SHOLYTICS&apos;s primary commercial platform — an adaptive AI system that
-              transforms clinical data into personalized treatment plans and real-time decision support
-              for healthcare providers. Built for hospitals, clinics, specialty centers, and telehealth
-              networks of all sizes.
+              Most teams still check stock against delivery dates by hand, across spreadsheets,
+              supplier portals and public notices. DrugAI puts stock on hand, daily usage, pending
+              orders and sourced shortage notices side by side, and flags what may run out before the
+              next delivery, with the calculation behind every alert.
             </p>
           </div>
 
           {/* Stat row */}
           <div className="grid grid-cols-2 gap-4">
-            {MEDAI_STATS.map((s) => (
+            {DRUGAI_STATS.map((s) => (
               <div
                 key={s.label}
                 className="rounded-xl p-5 border text-center"
@@ -58,7 +58,7 @@ export default function MedAICare() {
 
         {/* Feature grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
-          {MEDAI_FEATURES.map((f, i) => (
+          {DRUGAI_FEATURES.map((f, i) => (
             <motion.div
               key={f.title}
               initial={{ opacity: 0, y: 20 }}
@@ -87,18 +87,19 @@ export default function MedAICare() {
           style={{ background: 'rgba(249,115,22,0.04)', borderColor: 'rgba(249,115,22,0.2)' }}
         >
           <div>
-            <p className="font-bold text-[18px] mb-2">Subscription-Based Access for Healthcare Providers</p>
+            <p className="font-bold text-[18px] mb-2">Become a DrugAI Design Partner</p>
             <p className="text-[14px] text-slate-400 max-w-xl leading-relaxed">
-              MedAI Care operates on a tiered subscription model for institutions of all sizes — from
-              single clinics to large hospital networks. Clinical training programs and advanced
-              analytics packages available as add-ons.
+              We are working with a small number of pharmacies and hospital pharmacy teams to test
+              DrugAI on synthetic data first. Tell us how you check stock against deliveries today,
+              and help shape what we build. DrugAI does not give clinical advice or recommend
+              medication substitutions.
             </p>
           </div>
           <button
             onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
             className="flex-shrink-0 px-7 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl text-[14px] transition-all duration-200 hover:shadow-[0_8px_30px_rgba(249,115,22,0.35)] whitespace-nowrap"
           >
-            Schedule a Demo →
+            Join the Program →
           </button>
         </motion.div>
       </div>

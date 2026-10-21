@@ -5,9 +5,8 @@ import { Menu, X } from 'lucide-react'
 
 const NAV_LINKS = [
   { label: 'About',     href: '#about'       },
-  { label: 'MedAI Care',href: '#medaicare'   },
-  { label: 'Research',  href: '#research'    },
-  { label: 'Impact',    href: '#impact'      },
+  { label: 'DrugAI',    href: '#drugai'      },
+  { label: 'Roadmap',   href: '#research'    },
   { label: 'Team',      href: '#team'        },
   { label: 'Partners',  href: '#partners'    },
 ]

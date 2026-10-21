@@ -2,9 +2,8 @@ import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import Marquee from '@/components/Marquee'
 import About from '@/components/About'
-import MedAICare from '@/components/MedAICare'
+import DrugAI from '@/components/DrugAI'
 import Research from '@/components/Research'
-import Impact from '@/components/Impact'
 import Imagery from '@/components/Imagery'
 import Mission from '@/components/Mission'
 import Divisions from '@/components/Divisions'
@@ -22,9 +21,8 @@ export default function Home() {
         <Hero />
         <Marquee />
         <About />
-        <MedAICare />
+        <DrugAI />
         <Research />
-        <Impact />
         <Imagery />
         <Mission />
         <Divisions />

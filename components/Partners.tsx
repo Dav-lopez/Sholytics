@@ -3,11 +3,11 @@ import { motion } from 'framer-motion'
 import { PARTNERS } from '@/lib/data'
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'AI & Cloud': '☁️',
-  'Healthcare Tech': '🏥',
-  'Pharmaceutical': '💊',
-  'Universities': '🎓',
-  'Government': '🏛️',
+  'Pharmacies': '💊',
+  'Hospitals': '🏥',
+  'Research': '🎓',
+  'Funding': '🏛️',
+  'Advisors': '🧭',
 }
 
 export default function Partners() {
@@ -20,13 +20,13 @@ export default function Partners() {
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14"
         >
           <div>
-            <p className="font-mono text-xs text-orange-500 tracking-[0.12em] uppercase mb-3">Target Ecosystem</p>
+            <p className="font-mono text-xs text-orange-500 tracking-[0.12em] uppercase mb-3">Work With Us</p>
             <h2 className="font-bold leading-tight tracking-tight mb-3" style={{ fontSize:'clamp(2rem,4vw,3rem)' }}>
-              Partners we&apos;re building toward
+              Who we want to work with
             </h2>
             <p className="text-slate-400 text-[16px] max-w-md leading-relaxed">
-              Actively preparing proposals for universities, hospitals, government agencies,
-              and technology leaders. Collaboration inquiries welcome.
+              We are looking for design partners, research collaborators and advisors.
+              If your organization fits, we would like to hear from you.
             </p>
           </div>
           <button
@@ -34,7 +34,7 @@ export default function Partners() {
             className="flex-shrink-0 self-start md:self-auto px-6 py-3 rounded-xl border font-semibold text-[14px] text-orange-400 transition-all duration-200 hover:border-orange-500/50 hover:bg-orange-500/8"
             style={{ borderColor:'rgba(249,115,22,0.25)', background:'rgba(249,115,22,0.06)' }}
           >
-            Send a Proposal →
+            Get in Touch →
           </button>
         </motion.div>
 
@@ -72,7 +72,7 @@ export default function Partners() {
           style={{ background:'rgba(249,115,22,0.05)', borderColor:'rgba(249,115,22,0.18)' }}
         >
           <p className="text-slate-300 text-[14px] leading-relaxed">
-            University and government proposals sent to:{' '}
+            Partnership and research enquiries:{' '}
             <a href="mailto:partnerships@sholytics.org" className="text-orange-400 hover:text-orange-300 transition-colors font-medium">partnerships@sholytics.org</a>
             {' '}·{' '}
             <a href="mailto:research@sholytics.org" className="text-orange-400 hover:text-orange-300 transition-colors font-medium">research@sholytics.org</a>

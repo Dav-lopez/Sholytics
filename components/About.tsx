@@ -3,11 +3,11 @@ import { motion } from 'framer-motion'
 
 const POINTS = [
   'Founded by AI engineers, data scientists, and healthcare analytics specialists',
-  'Registered LLC in the Commonwealth of Kentucky — active since August 2025',
-  'Building six specialized AI research platforms targeting distinct healthcare gaps',
-  'Aligned with NIH, FDA, and CMS frameworks from day one',
-  'Designed for hospitals, universities, government agencies, and research institutions',
-  'HIPAA-compliant infrastructure architecture across all platforms',
+  'Registered LLC in the Commonwealth of Kentucky, active since August 2025',
+  'One product in development, DrugAI, built around a specific procurement workflow',
+  'Every product labelled by its real stage: prototype, research or concept',
+  'Transparent estimates that show their inputs, calculations and sources',
+  'No patient data in DrugAI; security review before any pilot with real data',
 ]
 
 export default function About() {
@@ -32,25 +32,25 @@ export default function About() {
               className="font-bold leading-tight tracking-tight mb-6"
               style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
             >
-              An AI research company built for healthcare's hardest problems
+              A healthcare intelligence company that starts with one real problem
             </h2>
             <p className="text-slate-400 text-[16px] leading-[1.8] mb-5">
-              SHOLYTICS LLC was founded to close the gap between what AI can do and what American
-              healthcare actually deploys. We build specialized research platforms — not general-purpose
-              tools — each designed around a specific, measurable failure in the U.S. health system.
+              SHOLYTICS LLC was founded to close the gap between what data and AI can do and what
+              healthcare teams actually use day to day. Our long-term vision is a set of independent
+              healthcare intelligence products that can securely share authorized information when the
+              organizations using them choose to.
             </p>
             <p className="text-slate-400 text-[16px] leading-[1.8] mb-8">
-              Our flagship product, MedAI Care, is an AI-driven clinical platform built for hospitals
-              and healthcare providers. Our research divisions — CancerAI, DrugAI, AIDSAI, America
-              Health Grid, and Precision Medicine — each address a distinct national healthcare challenge
-              with dedicated AI infrastructure.
+              We are starting with DrugAI, a medication supply tool for pharmacy and hospital
+              procurement teams, because it solves a concrete, measurable problem without patient
+              data. Clinical decision support continues as a research track with university partners.
             </p>
 
             <div className="grid grid-cols-3 gap-6">
               {[
                 { n: '4',    l: 'Co-Founders'     },
-                { n: '6',    l: 'AI Platforms'    },
-                { n: '2027', l: 'Break-even target'},
+                { n: '1',    l: 'Product in prototype' },
+                { n: '2027', l: 'Break-even goal'},
               ].map(s => (
                 <div key={s.l}>
                   <div
@@ -80,7 +80,7 @@ export default function About() {
               Why SHOLYTICS
             </p>
             <h3 className="font-bold text-xl mb-6 leading-tight">
-              Built for institutions that demand rigorous AI
+              Built to earn trust, one product at a time
             </h3>
 
             <div className="space-y-4">

@@ -1,8 +1,8 @@
 'use client'
 const FOOTER_LINKS = {
-  Research: [
-    'MedAI Care', 'CancerAI', 'DrugAI',
-    'AIDSAI', 'America Health Grid', 'Precision Medicine',
+  Products: [
+    'DrugAI', 'MedAI Care (research)', 'Intelligence Exchange',
+    'Product roadmap',
   ],
   Company: ['About', 'Mission', 'Team', 'Credibility', 'Contact'],
   Contact: [
@@ -14,8 +14,8 @@ const FOOTER_LINKS = {
 }
 
 const SECTION_IDS: Record<string, string> = {
-  'MedAI Care':'#medaicare','CancerAI':'#research','DrugAI':'#research',
-  'AIDSAI':'#research','America Health Grid':'#research','Precision Medicine':'#research',
+  'DrugAI':'#drugai','MedAI Care (research)':'#research','Intelligence Exchange':'#research',
+  'Product roadmap':'#research',
   'About':'#about','Mission':'#mission','Team':'#team','Credibility':'#credibility','Contact':'#contact',
 }
 
@@ -43,10 +43,10 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Research */}
+          {/* Products */}
           <div>
-            <p className="font-mono text-[10px] text-orange-500 tracking-[0.12em] uppercase mb-5">Research</p>
-            {FOOTER_LINKS.Research.map(item => (
+            <p className="font-mono text-[10px] text-orange-500 tracking-[0.12em] uppercase mb-5">Products</p>
+            {FOOTER_LINKS.Products.map(item => (
               <button
                 key={item}
                 onClick={() => scrollTo(SECTION_IDS[item] || '#research')}

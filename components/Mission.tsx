@@ -2,10 +2,9 @@
 import { motion } from 'framer-motion'
 
 const PILLS = [
-  'Early Detection', 'Drug Shortage Prevention', 'Rural Health Equity',
-  'Precision Treatment', 'HIV Treatment Support', 'Veterans Health',
-  'Clinical Decision Support', 'Genomic Medicine', 'National AI Grid',
-  'CMS Value-Based Care', 'FDA Integration', 'NIH Research',
+  'Medication Supply', 'Procurement Visibility', 'Transparent Estimates',
+  'Sourced Information', 'Privacy by Design', 'Human Judgment',
+  'Clinical AI Research', 'University Partnerships', 'Evidence Before Claims',
 ]
 
 export default function Mission() {
@@ -42,9 +41,10 @@ export default function Mission() {
             </span>
           </h2>
           <p className="text-slate-400 text-[17px] md:text-[18px] leading-[1.85] mb-10 max-w-2xl mx-auto">
-            The gap between what AI can do and what healthcare actually deploys is measurable —
-            in delayed diagnoses, avoidable drug shortages, and preventable complications.
-            SHOLYTICS exists to close that gap, one research platform at a time.
+            The gap between what data can show and what healthcare teams can act on is real:
+            in supply problems spotted too late, information scattered across systems, and
+            decisions made without the full picture. SHOLYTICS exists to close that gap, one
+            useful, honest product at a time.
           </p>
           <div className="flex gap-2.5 justify-center flex-wrap">
             {PILLS.map((p) => (

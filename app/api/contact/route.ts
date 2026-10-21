@@ -9,91 +9,104 @@ interface ContactPayload {
   msg: string
 }
 
+const FALLBACK_EMAIL = 'management@sholytics.org'
+
 // ─── Validation ───────────────────────────────────────────────────────────────
 function validate(body: Partial<ContactPayload>): string | null {
   if (!body.name?.trim()) return 'Name is required'
-  if (!body.email?.trim() || !body.email.includes('@')) return 'Valid email is required'
+  if (!body.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) return 'Valid email is required'
   if (!body.msg?.trim()) return 'Message is required'
+  if ((body.msg?.length ?? 0) > 5000) return 'Message is too long (5,000 characters maximum)'
   return null
 }
 
-// ─── Handler ──────────────────────────────────────────────────────────────────
-export async function POST(req: NextRequest) {
-  try {
-    const body: Partial<ContactPayload> = await req.json()
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
 
-    const error = validate(body)
-    if (error) {
-      return NextResponse.json({ success: false, error }, { status: 400 })
+// ─── Handler ──────────────────────────────────────────────────────────────────
+// Sends each submission by email through Resend (https://resend.com) using its REST API.
+// Required env: RESEND_API_KEY. Optional: CONTACT_TO (default management@sholytics.org),
+// CONTACT_FROM (default "SHOLYTICS Website <contact@sholytics.org>"; the sending domain
+// must be verified in Resend).
+// Without RESEND_API_KEY the form does NOT pretend to succeed: it asks the visitor to
+// email us directly, so no enquiry is silently lost.
+export async function POST(req: NextRequest) {
+  let body: Partial<ContactPayload>
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ success: false, error: 'Invalid request' }, { status: 400 })
+  }
+
+  const error = validate(body)
+  if (error) {
+    return NextResponse.json({ success: false, error }, { status: 400 })
+  }
+
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.error('[Contact API] RESEND_API_KEY is not set; submission not delivered')
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Our contact form is not available right now. Please email us directly at ${FALLBACK_EMAIL}.`,
+      },
+      { status: 503 },
+    )
+  }
+
+  const name = body.name!.trim()
+  const org = body.org?.trim() ?? ''
+  const email = body.email!.trim()
+  const type = body.type?.trim() || 'General Inquiry'
+  const msg = body.msg!.trim()
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: process.env.CONTACT_FROM || 'SHOLYTICS Website <contact@sholytics.org>',
+        to: [process.env.CONTACT_TO || FALLBACK_EMAIL],
+        reply_to: email,
+        subject: `[${type}] New inquiry from ${name}${org ? ` (${org})` : ''}`.slice(0, 200),
+        html: `
+          <h2>New website inquiry</h2>
+          <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Organization:</strong> ${escapeHtml(org || 'Not provided')}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <p><strong>Type:</strong> ${escapeHtml(type)}</p>
+          <hr/>
+          <p><strong>Message:</strong></p>
+          <p>${escapeHtml(msg).replace(/\n/g, '<br/>')}</p>
+        `,
+        text: `Name: ${name}\nOrganization: ${org || 'Not provided'}\nEmail: ${email}\nType: ${type}\n\n${msg}`,
+      }),
+    })
+
+    if (!res.ok) {
+      console.error('[Contact API] Resend rejected the message', res.status, await res.text())
+      return NextResponse.json(
+        { success: false, error: `We could not send your message. Please email us directly at ${FALLBACK_EMAIL}.` },
+        { status: 502 },
+      )
     }
 
-    const { name, org, email, type, msg } = body as ContactPayload
-
-    // ── Option A: Resend (recommended — free tier 3,000 emails/mo) ────────────
-    // Install: npm install resend
-    // Add to .env.local: RESEND_API_KEY=re_xxxxxxxxxxxx
-    // Uncomment the block below:
-    //
-    // import { Resend } from 'resend'
-    // const resend = new Resend(process.env.RESEND_API_KEY)
-    // await resend.emails.send({
-    //   from: 'SHOLYTICS Contact Form <contact@sholytics.org>',
-    //   to: ['management@sholytics.org'],
-    //   replyTo: email,
-    //   subject: `[${type}] New inquiry from ${name}${org ? ` — ${org}` : ''}`,
-    //   html: `
-    //     <h2>New Partnership Inquiry</h2>
-    //     <p><strong>Name:</strong> ${name}</p>
-    //     <p><strong>Organization:</strong> ${org || 'Not provided'}</p>
-    //     <p><strong>Email:</strong> ${email}</p>
-    //     <p><strong>Type:</strong> ${type}</p>
-    //     <hr/>
-    //     <p><strong>Message:</strong></p>
-    //     <p>${msg.replace(/\n/g, '<br/>')}</p>
-    //   `,
-    // })
-
-    // ── Option B: Zoho SMTP via Nodemailer ────────────────────────────────────
-    // Install: npm install nodemailer @types/nodemailer
-    // Add to .env.local:
-    //   ZOHO_USER=management@sholytics.org
-    //   ZOHO_PASS=your_app_password
-    // Uncomment:
-    //
-    // import nodemailer from 'nodemailer'
-    // const transporter = nodemailer.createTransport({
-    //   host: 'smtp.zoho.com',
-    //   port: 465,
-    //   secure: true,
-    //   auth: { user: process.env.ZOHO_USER, pass: process.env.ZOHO_PASS },
-    // })
-    // await transporter.sendMail({
-    //   from: `"SHOLYTICS Website" <${process.env.ZOHO_USER}>`,
-    //   to: 'management@sholytics.org',
-    //   replyTo: email,
-    //   subject: `[${type}] New inquiry from ${name}`,
-    //   html: `
-    //     <h2>New Contact Form Submission</h2>
-    //     <table>
-    //       <tr><td><strong>Name</strong></td><td>${name}</td></tr>
-    //       <tr><td><strong>Org</strong></td><td>${org || '—'}</td></tr>
-    //       <tr><td><strong>Email</strong></td><td>${email}</td></tr>
-    //       <tr><td><strong>Type</strong></td><td>${type}</td></tr>
-    //     </table>
-    //     <p><strong>Message:</strong><br/>${msg.replace(/\n/g, '<br/>')}</p>
-    //   `,
-    // })
-
-    // ── Fallback: log to console (dev/staging) ────────────────────────────────
-    console.log('[SHOLYTICS Contact]', { name, org, email, type, msg })
-
     return NextResponse.json({ success: true }, { status: 200 })
-
   } catch (err) {
     console.error('[Contact API Error]', err)
     return NextResponse.json(
-      { success: false, error: 'Server error. Please email us directly at management@sholytics.org' },
-      { status: 500 }
+      { success: false, error: `Server error. Please email us directly at ${FALLBACK_EMAIL}.` },
+      { status: 500 },
     )
   }
 }

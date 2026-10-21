@@ -4,22 +4,22 @@ import '../styles/globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL('https://sholytics.org'),
   title: {
-    default: 'SHOLYTICS LLC — AI-Powered Healthcare Innovation',
+    default: 'SHOLYTICS LLC — Healthcare Intelligence, Starting with DrugAI',
     template: '%s | SHOLYTICS LLC',
   },
   description:
-    'SHOLYTICS develops AI research platforms advancing healthcare through decision support, early detection, drug shortage prediction, and precision medicine — improving outcomes for patients across America.',
+    'SHOLYTICS builds healthcare intelligence products, starting with DrugAI: a medication supply prototype that helps pharmacy and hospital procurement teams see which items may run out before the next delivery.',
   keywords: [
-    'SHOLYTICS', 'MedAI Care', 'healthcare AI', 'CancerAI', 'DrugAI',
-    'precision medicine', 'drug shortage prediction', 'clinical decision support',
-    'medical AI', 'healthcare innovation', 'NIH', 'CMS value-based care',
+    'SHOLYTICS', 'DrugAI', 'medication supply', 'drug shortages', 'pharmacy inventory',
+    'hospital pharmacy procurement', 'days of supply', 'healthcare intelligence',
+    'MedAI Care', 'clinical AI research',
   ],
   authors: [{ name: 'SHOLYTICS LLC' }],
   creator: 'SHOLYTICS LLC',
   openGraph: {
-    title: 'SHOLYTICS LLC — AI-Powered Healthcare Innovation',
+    title: 'SHOLYTICS LLC — Healthcare Intelligence, Starting with DrugAI',
     description:
-      'Six AI research platforms advancing cancer detection, drug shortage prevention, HIV treatment support, rural healthcare access, and precision medicine.',
+      'DrugAI helps pharmacy and hospital procurement teams spot medication supply gaps before the next delivery. Now inviting design partners.',
     type: 'website',
     url: 'https://sholytics.org',
     siteName: 'SHOLYTICS LLC',
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SHOLYTICS LLC — AI-Powered Healthcare Innovation',
+    title: 'SHOLYTICS LLC — Healthcare Intelligence, Starting with DrugAI',
     description:
-      'Advancing healthcare through AI-powered research, decision support, and better outcomes.',
+      'DrugAI: see medication supply gaps before they reach your shelf. Now inviting design partners.',
     creator: '@sholytics',
   },
   robots: {

@@ -13,9 +13,9 @@ export default function Divisions() {
           transition={{ duration: 0.6 }}
           className="mb-14"
         >
-          <p className="font-mono text-xs text-orange-500 tracking-[0.12em] uppercase mb-3">Platform Overview</p>
+          <p className="font-mono text-xs text-orange-500 tracking-[0.12em] uppercase mb-3">Roadmap at a Glance</p>
           <h2 className="font-bold leading-tight tracking-tight" style={{ fontSize: 'clamp(2rem,4vw,3rem)' }}>
-            Full division breakdown
+            Where each product stands
           </h2>
         </motion.div>
 
@@ -42,11 +42,11 @@ export default function Divisions() {
                   <div>
                     <div className="font-bold text-[17px] leading-tight">{div.name}</div>
                     <div className="font-mono text-[10px] text-orange-500 tracking-widest uppercase mt-1">
-                      {div.tag}
+                      {div.tag} · {div.status}
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-slate-400 leading-relaxed">{div.desc}</p>
+                <p className="text-sm text-slate-400 leading-relaxed">{div.tagline}. {div.note}</p>
                 <span className="hidden md:block text-orange-500 text-xl opacity-30 transition-opacity group-hover:opacity-100">→</span>
               </div>
             </div>

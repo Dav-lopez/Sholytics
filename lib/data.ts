@@ -1,200 +1,165 @@
+// ─── CONTENT RULES ───────────────────────────────────────────────────────────
+// Describe products by their real status: Prototype, Research or Concept.
+// Do not claim integrations, certifications, partnerships, customers or results
+// that do not exist yet, and cite a source for any market or health statistic.
+
+export type Status = 'Prototype' | 'Research' | 'Concept'
+
 // ─── HERO ───────────────────────────────────────────────────────────────────
 export const HERO_STATS = [
-  { value: '600K+',  label: 'Cancer deaths per year in the U.S.' },
-  { value: '$35B',   label: 'Annual drug shortage disruption cost' },
-  { value: '60M',    label: 'Rural Americans without specialist access' },
-  { value: '1.2M',   label: 'Americans living with HIV' },
+  { value: 'DrugAI',  label: 'First product, now in prototype' },
+  { value: 'CSV',     label: 'Starts from an inventory file, no integration needed' },
+  { value: '0',       label: 'Patient records needed to use it' },
+  { value: 'Open',    label: 'Design-partner program for pharmacies and hospitals' },
 ]
 
 // ─── MARQUEE ─────────────────────────────────────────────────────────────────
 export const MARQUEE_ITEMS = [
-  'MedAI Care', 'CancerAI', 'DrugAI', 'AIDSAI',
-  'America Health Grid', 'Precision Medicine', 'EHR Integration',
-  'Genomics AI', 'Predictive Analytics', 'Clinical Decision Support',
-  'Drug Shortage Prediction', 'Veteran Health AI', 'NIH Collaboration',
-  'FDA Data Integration', 'CMS Value-Based Care',
+  'DrugAI', 'Days-of-Supply Estimates', 'Delivery-Gap Alerts', 'Sourced Shortage Notices',
+  'Ranked Review List', 'Procurement Reports', 'Audit Trail', 'Pharmacy Procurement',
+  'Hospital Supply Chain', 'Clinical AI Research', 'Intelligence Exchange · Concept',
 ]
 
-// ─── MEDAI CARE ───────────────────────────────────────────────────────────────
-export const MEDAI_FEATURES = [
+// ─── DRUGAI ───────────────────────────────────────────────────────────────────
+export const DRUGAI_FEATURES = [
   {
-    icon: '🧠',
-    title: 'Ensemble ML Engine',
-    desc: 'Deep neural networks, random forests, and support vector machines trained on EHR data, medical imaging, genomics, and wearable device inputs — working in concert to detect patterns no single model finds alone.',
+    icon: '📥',
+    title: 'Inventory Import',
+    desc: 'Upload a CSV of stock on hand and average daily use. Every row is validated and previewed before anything is saved, and files containing patient information are rejected.',
   },
   {
-    icon: '📊',
-    title: 'Real-Time Clinical Dashboard',
-    desc: 'Dynamic dashboards give clinicians immediate visibility into patient health trends, risk scores, and treatment response — enabling faster intervention before conditions escalate.',
-  },
-  {
-    icon: '🔬',
-    title: 'NLP on Clinical Notes',
-    desc: 'Advanced NLP parses unstructured clinical notes, research publications, and patient feedback to continuously refine predictive models with up-to-date evidence.',
+    icon: '📆',
+    title: 'Days of Supply and Delivery Gaps',
+    desc: 'DrugAI compares how long each item should last with when the next order is due, and flags items that may run out first.',
   },
   {
     icon: '🎯',
-    title: 'Patient Population Segmentation',
-    desc: 'Clustering algorithms segment patients into risk cohorts based on health characteristics, enabling targeted care protocols and identification of best practices across similar cases.',
+    title: 'Ranked “Needs Review” List',
+    desc: 'The items that need attention today, ranked by urgency: out of stock, potential gaps, overdue orders and low supply with nothing on order.',
+  },
+  {
+    icon: '🧾',
+    title: 'Every Alert Shows Its Working',
+    desc: 'Each alert lists the inputs, the calculation, its assumptions and a suggested next step, so your team can check the estimate rather than trust a black box.',
+  },
+  {
+    icon: '📰',
+    title: 'Sourced Shortage Notices',
+    desc: 'Link public shortage notices to the items they affect, with source, date and link. Older notices are flagged for a fresh check.',
   },
   {
     icon: '🔒',
-    title: 'HIPAA-Compliant Infrastructure',
-    desc: 'Built on AWS and Azure with end-to-end encryption, audit trails, and SOC 2 Type II practices. Patient data never moves without explicit consent and documented authorization.',
+    title: 'Private by Design',
+    desc: 'Each organization’s data is isolated, every action is recorded in an audit log, and the first version needs no patient data at all.',
   },
+]
+
+export const DRUGAI_STATS = [
+  { value: '240 ÷ 20', label: 'units on hand ÷ daily use = 12 days of supply' },
+  { value: '16 − 12',  label: 'days to delivery − days of supply = 4-day gap' },
+  { value: '1 list',   label: 'of what needs review today, ranked by urgency' },
+  { value: 'CSV / PDF', label: 'procurement review reports for buyers' },
+]
+
+// ─── PRODUCT ROADMAP ─────────────────────────────────────────────────────────
+export const DIVISIONS: {
+  icon: string
+  name: string
+  tag: string
+  status: Status
+  tagline: string
+  desc: string
+  note: string
+  color: string
+}[] = [
   {
-    icon: '🔗',
-    title: 'EHR System Integration',
-    desc: 'Connects with Epic, Oracle Health, and major EHR platforms through HL7/FHIR standards. No rip-and-replace — MedAI Care works inside the systems clinicians already use.',
+    icon: '💊',
+    name: 'DrugAI',
+    tag: 'Medication Supply Intelligence',
+    status: 'Prototype',
+    tagline: 'See supply gaps before they reach your shelf',
+    desc: 'Helps pharmacy and hospital procurement teams see which medications may run out before the next delivery, why, and what to follow up on. Uses inventory files and public shortage notices; no patient data.',
+    note: 'Now looking for design partners among independent pharmacies, pharmacy groups and hospital pharmacy teams.',
+    color: '#FBBF24',
   },
-]
-
-export const MEDAI_STATS = [
-  { value: '16.3%', label: 'U.S. digital health CAGR' },
-  { value: '$85B',  label: 'U.S. market size by 2025' },
-  { value: '$43B',  label: 'U.S. healthcare tech by 2025' },
-  { value: '2027',  label: 'Projected break-even year' },
-]
-
-// ─── RESEARCH DIVISIONS ──────────────────────────────────────────────────────
-export const DIVISIONS = [
   {
     icon: '🧬',
     name: 'MedAI Care',
-    tag: 'Clinical AI',
-    tagline: 'Personalized treatment intelligence',
-    desc: 'Adaptive AI platform using ensemble machine learning trained on EHR data, medical imaging, genomics, and real-time wearable inputs. Personalized treatment plans delivered in real-time to clinicians.',
-    stats: [
-      { value: '16.3%', label: 'U.S. digital health CAGR' },
-      { value: '$85B',  label: '2025 market size' },
-    ],
-    impact: 'Addresses one-size-fits-all treatment protocols that produce suboptimal outcomes for a significant portion of patients annually.',
+    tag: 'Clinical Decision Support',
+    status: 'Research',
+    tagline: 'Clinical AI that keeps clinicians in control',
+    desc: 'A research track exploring clinical decision support with university partners and de-identified or public datasets. Any clinical product will follow model validation and an appropriate regulatory review.',
+    note: 'Research collaborations welcome. Not available as a clinical product.',
     color: '#F97316',
+  },
+  {
+    icon: '🔗',
+    name: 'Intelligence Exchange',
+    tag: 'Shared Supply Signals',
+    status: 'Concept',
+    tagline: 'Independent by design. Connected by choice.',
+    desc: 'A future, opt-in way for participating organizations to share aggregated, non-patient supply signals, so regional shortages can be seen earlier than any one organization could alone.',
+    note: 'Planned only after DrugAI has active users and the governance is in place.',
+    color: '#34D399',
   },
   {
     icon: '🔬',
     name: 'CancerAI',
-    tag: 'Oncology AI',
-    tagline: 'Earlier detection. Better outcomes.',
-    desc: 'AI-assisted cancer detection through radiology imaging analysis and genomic risk stratification. Clinical trial matching engine connects patients to relevant studies faster than manual methods.',
-    stats: [
-      { value: '39%',  label: 'Americans diagnosed in lifetime' },
-      { value: '+30%', label: '5yr survival with early detection' },
-    ],
-    impact: 'Over 600,000 Americans die from cancer annually. Earlier detection through AI-assisted imaging analysis is one of the most impactful interventions available.',
+    tag: 'Oncology Research',
+    status: 'Concept',
+    tagline: 'A long-term research interest',
+    desc: 'A possible future research line on evidence discovery for oncology researchers. It does not diagnose or treat cancer.',
+    note: 'Exploratory. Would require research partners and validated methods.',
     color: '#FB923C',
   },
   {
-    icon: '💊',
-    name: 'DrugAI',
-    tag: 'Supply Intelligence',
-    tagline: 'Predict shortages before they harm patients',
-    desc: 'Predicts national drug shortages 6–12 months before they occur using FDA shortage database signals, manufacturer production data, and hospital inventory patterns — integrating with FDA\'s CDER Direct NextGen Portal.',
-    stats: [
-      { value: '300+', label: 'Drugs in shortage today' },
-      { value: '$35B', label: 'Annual disruption cost' },
-    ],
-    impact: 'Drug shortages delay or deny treatment for millions of patients — often for the most critical medications including chemotherapy agents and anesthetics.',
-    color: '#FBBF24',
-  },
-  {
-    icon: '🌍',
-    name: 'AIDSAI',
-    tag: 'Infectious Disease AI',
-    tagline: 'HIV treatment and prevention support',
-    desc: 'Treatment adherence monitoring, drug resistance forecasting, and public health spread modeling. Supports proactive outreach in underserved communities that lack regular access to infectious disease specialists.',
-    stats: [
-      { value: '1.2M', label: 'Americans living with HIV' },
-      { value: '35K',  label: 'New preventable cases/year' },
-    ],
-    impact: 'New HIV infections remain concentrated in communities with the least access to specialist care. AI-assisted adherence monitoring and risk stratification can change those odds.',
+    icon: '🏥',
+    name: 'Hospital Intelligence',
+    tag: 'Operations Analytics',
+    status: 'Concept',
+    tagline: 'Operational visibility for hospitals',
+    desc: 'A possible later product for capacity, staffing and operational reporting, considered only if DrugAI hospital users ask for it.',
+    note: 'Not in development.',
     color: '#A78BFA',
   },
   {
-    icon: '🏥',
-    name: 'America Health Grid',
-    tag: 'National AI Platform',
-    tagline: 'Healthcare access for all 50 states',
-    desc: 'AI-assisted telehealth triage for rural Americans, VA hospital integration, national outbreak early warning, and chronic disease prediction for underserved populations across all 50 states.',
-    stats: [
-      { value: '60M', label: 'Americans without specialist access' },
-      { value: '340', label: 'Rural hospitals closed since 2010' },
-    ],
-    impact: 'Rural Americans have shorter average life expectancies than urban counterparts — a gap driven primarily by delayed diagnosis and limited specialist availability.',
-    color: '#F97316',
-  },
-  {
     icon: '🧠',
-    name: 'Precision Medicine',
-    tag: 'Genomic AI',
-    tagline: 'Individualized treatment from genomic data',
-    desc: 'Whole-genome analysis combined with lifestyle data and medical history generates individualized treatment recommendations. Aligned with NIH All of Us Research Program and pharmacogenomics research.',
-    stats: [
-      { value: '$528B', label: 'Annual trial-and-error prescribing waste' },
-      { value: '60%',   label: 'Patients who benefit from genomic data' },
-    ],
-    impact: 'The same drug at the same dose produces vastly different outcomes based on individual genetics. Precision medicine eliminates that uncertainty before prescribing.',
-    color: '#34D399',
-  },
-]
-
-// ─── IMPACT ───────────────────────────────────────────────────────────────────
-export const IMPACT_BARS = [
-  { label: 'Cancer (late-stage detection deaths)', sub: '600K deaths/yr',       width: '95%' },
-  { label: 'Drug shortage patient disruptions',    sub: 'Millions affected',    width: '80%' },
-  { label: 'Rural specialist access gap',          sub: '60M without access',   width: '72%' },
-  { label: 'Trial-and-error prescribing waste',    sub: '$528B annually',       width: '65%' },
-  { label: 'Preventable new HIV transmissions',    sub: '35K/yr',               width: '40%' },
-]
-
-export const IMPACT_ITEMS = [
-  {
-    icon: '🎯',
-    title: 'CMS Value-Based Care Alignment',
-    desc: 'SHOLYTICS platforms align with CMS Hospital Value-Based Purchasing (VBP), Hospital Readmissions Reduction (HRRP), and HAC Reduction programs — delivering quality metrics that support Medicare participation.',
-  },
-  {
-    icon: '🔗',
-    title: 'FDA Drug Shortage Integration',
-    desc: "DrugAI integrates with FDA's CDER Direct NextGen Portal and public shortage database. Predictive models provide 6–12 month early warning to hospital procurement teams.",
-  },
-  {
-    icon: '🏛️',
-    title: 'NIH & NCI Research Collaboration',
-    desc: 'Seeking active collaboration with NIH, NCI, and CDC to validate AI models against national health datasets and contribute to peer-reviewed clinical research.',
-  },
-  {
-    icon: '⚕️',
-    title: 'HIPAA-Compliant Infrastructure',
-    desc: 'All platforms built on HIPAA-compliant cloud infrastructure with end-to-end encryption, access audit trails, and SOC 2 Type II security practices.',
+    name: 'Research Intelligence',
+    tag: 'Research Discovery',
+    status: 'Concept',
+    tagline: 'Organizing evidence for research teams',
+    desc: 'A possible tool for university and research teams to find literature and datasets, with every finding traceable to its source.',
+    note: 'Not in development.',
+    color: '#F97316',
   },
 ]
 
 // ─── TEAM ─────────────────────────────────────────────────────────────────────
+// Bios describe current roles; each co-founder should confirm their own bio.
 export const TEAM = [
   {
     initials: 'AA',
     name: 'Adekunle Adefabi',
     role: 'Co-Founder & CEO',
-    bio: 'Provides strategic vision and organizational leadership. Leads SHOLYTICS\' mission to build AI-powered healthcare research platforms at national scale.',
+    bio: 'Leads strategy, partnerships and customer discovery, including the DrugAI design-partner program.',
   },
   {
     initials: 'IO',
     name: 'Ibrahim Olushola',
     role: 'Co-Founder & Chief Data Scientist',
-    bio: 'Directs ML pipeline architecture across all six platforms. Leads the AI systems behind MedAI Care and CancerAI research infrastructure.',
+    bio: 'Leads data science, including DrugAI’s forecasting methods and the clinical AI research track.',
   },
   {
     initials: 'JL',
     name: 'Jesutoba Lopez',
     role: 'Co-Founder & Head of Technology',
-    bio: 'Builds HIPAA-compliant cloud infrastructure for global AI deployment. Leads EHR integration architecture and systems reliability.',
+    bio: 'Leads product engineering and cloud infrastructure, including the DrugAI prototype.',
   },
   {
     initials: 'OO',
     name: 'Olamide Olasupo',
     role: 'Co-Founder & CFO',
-    bio: 'Guides financial strategy and sustainability. Manages capital planning, grant applications, and investor relations for SHOLYTICS.',
+    bio: 'Guides financial strategy, capital planning, grant applications and investor relations.',
   },
 ]
 
@@ -208,51 +173,53 @@ export const CREDENTIALS = [
   {
     icon: '🎓',
     title: 'Academic Research Background',
-    desc: 'Founded by researchers with backgrounds in AI, software engineering, data science, and healthcare analytics. APSU affiliation.',
+    desc: 'Founded by people with backgrounds in AI, software engineering, data science and healthcare analytics, with ties to Austin Peay State University.',
   },
   {
     icon: '🤖',
-    title: 'AI & Software Engineering Expertise',
-    desc: 'Team expertise spans ML pipeline architecture, HIPAA-compliant cloud infrastructure, EHR integration, and clinical data engineering.',
+    title: 'Engineering and Data Expertise',
+    desc: 'Team experience spans machine learning, data engineering, backend systems and cloud infrastructure.',
   },
   {
-    icon: '🏥',
-    title: 'Healthcare Analytics Focus',
-    desc: 'Deep domain knowledge in CMS value-based care programs, FDA drug shortage frameworks, NIH research grant structure, and clinical decision support.',
+    icon: '🔍',
+    title: 'Transparent by Default',
+    desc: 'Our tools show their calculations and sources, and we label every product by its real stage: prototype, research or concept.',
   },
   {
     icon: '🎯',
-    title: 'Mission-Driven Organization',
-    desc: 'Built to serve the public interest — targeting healthcare gaps that disproportionately affect rural, veteran, and underserved communities across the United States.',
+    title: 'Evidence Before Claims',
+    desc: 'We test with real users before scaling, and we publish results only once we have measured them.',
   },
   {
-    icon: '📋',
-    title: 'Compliance-First Architecture',
-    desc: 'Every platform designed from day one with HIPAA compliance, SOC 2 Type II practices, FDA data integration standards, and CMS quality reporting requirements.',
+    icon: '🔒',
+    title: 'Privacy-First Approach',
+    desc: 'DrugAI’s first version uses no patient data. Any pilot with real organizational data will follow a security review and a written data agreement.',
   },
 ]
 
 // ─── PARTNERS ─────────────────────────────────────────────────────────────────
+// Kinds of organizations we want to work with. Name a specific organization here
+// only once a partnership is real and they have agreed to be listed.
 export const PARTNERS = [
   {
-    category: 'AI & Cloud',
-    items: ['Microsoft', 'Google Cloud', 'Amazon AWS', 'NVIDIA', 'OpenAI'],
+    category: 'Pharmacies',
+    items: ['Independent pharmacies', 'Regional pharmacy groups', 'Pharmacy owners and managers'],
   },
   {
-    category: 'Healthcare Tech',
-    items: ['Epic Systems', 'Oracle Health', 'Philips Healthcare', 'GE HealthCare'],
+    category: 'Hospitals',
+    items: ['Hospital pharmacy departments', 'Procurement and supply-chain teams', 'Pharmacy directors'],
   },
   {
-    category: 'Pharmaceutical',
-    items: ['Pfizer', 'Moderna', 'Merck', 'Johnson & Johnson', 'Gilead Sciences'],
+    category: 'Research',
+    items: ['University research groups', 'Health informatics labs', 'Medication-supply researchers'],
   },
   {
-    category: 'Universities',
-    items: ['Harvard Medical School', 'Stanford Medicine', 'Johns Hopkins', 'MIT', 'Vanderbilt'],
+    category: 'Funding',
+    items: ['Research grant programs', 'Startup programs', 'Mission-aligned investors'],
   },
   {
-    category: 'Government',
-    items: ['NIH', 'NCI', 'CDC', 'FDA', 'CMS'],
+    category: 'Advisors',
+    items: ['Pharmacy and supply-chain experts', 'Healthcare compliance advisors', 'Clinical research advisors'],
   },
 ]
 
@@ -265,10 +232,11 @@ export const CONTACT_CHANNELS = [
 ]
 
 export const INQUIRY_TYPES = [
+  'DrugAI Design Partner',
+  'Share Your Procurement Workflow',
   'Research Collaboration',
   'University Partnership',
-  'Government Grant Inquiry',
-  'Hospital Onboarding',
+  'Grant Inquiry',
   'Investment Inquiry',
   'Media / Press',
   'General Inquiry',

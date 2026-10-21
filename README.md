@@ -2,7 +2,7 @@
 
 > AI-Powered Healthcare Innovation for Research, Prevention & Better Outcomes
 
-Official website for **SHOLYTICS LLC** and **MedAI Care**. Built with Next.js 15, TypeScript, Tailwind CSS, and Framer Motion.
+Official website for **SHOLYTICS LLC** and its first product, **DrugAI** (medication supply intelligence). Built with Next.js 15, TypeScript, Tailwind CSS, and Framer Motion.
 
 ---
 
@@ -44,9 +44,8 @@ sholytics/
 │   ├── Hero.tsx             # Particle canvas + revised headline
 │   ├── Marquee.tsx          # Scrolling platform ticker
 │   ├── About.tsx            # Company overview + Why SHOLYTICS
-│   ├── MedAICare.tsx        # Flagship product section
-│   ├── Research.tsx         # 6-division research grid
-│   ├── Impact.tsx           # Animated counter + bar charts
+│   ├── DrugAI.tsx           # First product section (prototype)
+│   ├── Research.tsx         # Product roadmap with status labels
 │   ├── Imagery.tsx          # Photo mosaic (desktop + mobile)
 │   ├── Mission.tsx          # Mission statement
 │   ├── Divisions.tsx        # Full division list (mobile-fixed)
@@ -56,7 +55,7 @@ sholytics/
 │   ├── Contact.tsx          # Form → POST /api/contact
 │   └── Footer.tsx           # Full footer with nav links
 ├── lib/
-│   └── data.ts              # ALL content — edit here, not in components
+│   └── data.ts              # ALL content — edit here, not in components (see content rules at the top)
 ├── styles/
 │   └── globals.css          # Design tokens, animations, utilities
 ├── public/
@@ -71,34 +70,21 @@ sholytics/
 
 ## ✉️ Activating the Contact Form
 
-The form submits to `/api/contact`. Choose one email provider:
+The form posts to `/api/contact`, which sends each enquiry by email through
+[Resend](https://resend.com) using its REST API (no extra package needed).
 
-### Option A — Resend (recommended, free tier: 3,000 emails/mo)
-
-```bash
-npm install resend
-```
+1. Create a Resend account and verify `sholytics.org` as a sending domain.
+2. Add these environment variables in Vercel (and `.env.local` for local testing):
 
 ```env
-# .env.local
 RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+CONTACT_TO=management@sholytics.org
+CONTACT_FROM=SHOLYTICS Website <contact@sholytics.org>
 ```
 
-Then uncomment the Resend block in `app/api/contact/route.ts`.
-
-### Option B — Zoho SMTP via Nodemailer
-
-```bash
-npm install nodemailer @types/nodemailer
-```
-
-```env
-# .env.local
-ZOHO_USER=management@sholytics.org
-ZOHO_PASS=your_zoho_app_password
-```
-
-Then uncomment the Nodemailer block in `app/api/contact/route.ts`.
+Until `RESEND_API_KEY` is set, the form shows visitors a message asking them to email
+management@sholytics.org directly, rather than reporting success for a message that
+was never delivered.
 
 ---
 
@@ -121,17 +107,16 @@ Then uncomment the Nodemailer block in `app/api/contact/route.ts`.
 | 2 | Hero | `#hero` | Particle canvas, revised copy |
 | 3 | Marquee | — | Platform ticker |
 | 4 | About | `#about` | Who/why/what |
-| 5 | MedAI Care | `#medaicare` | Flagship product |
-| 6 | Research | `#research` | 6 divisions grid |
-| 7 | Impact | `#impact` | Animated stats |
-| 8 | Imagery | `#imagery` | Photo mosaic |
-| 9 | Mission | `#mission` | Statement + pills |
-| 10 | Divisions | `#divisions` | List view, mobile-safe |
-| 11 | Credibility | `#credibility` | For hospitals/universities |
-| 12 | Team | `#team` | 4 founders |
-| 13 | Partners | `#partners` | 5 target ecosystems |
-| 14 | Contact | `#contact` | Live form → API |
-| 15 | Footer | — | Links, legal |
+| 5 | DrugAI | `#drugai` | First product (prototype) |
+| 6 | Roadmap | `#research` | Products with Prototype / Research / Concept status |
+| 7 | Imagery | `#imagery` | Photo mosaic |
+| 8 | Mission | `#mission` | Statement + pills |
+| 9 | Divisions | `#divisions` | List view, mobile-safe |
+| 10 | Credibility | `#credibility` | For hospitals/universities |
+| 11 | Team | `#team` | 4 founders |
+| 12 | Partners | `#partners` | Kinds of partners sought (no named organizations) |
+| 13 | Contact | `#contact` | Live form → API |
+| 14 | Footer | — | Links, legal |
 
 ---
 
@@ -145,7 +130,7 @@ npx vercel          # follow prompts — framework auto-detected
 ```
 
 Environment variables to add in Vercel dashboard:
-- `RESEND_API_KEY` or `ZOHO_USER` + `ZOHO_PASS`
+- `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM`
 - `NEXT_PUBLIC_SITE_URL=https://sholytics.org`
 
 ---

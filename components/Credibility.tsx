@@ -23,11 +23,11 @@ export default function Credibility() {
             className="font-bold leading-tight tracking-tight mb-5"
             style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}
           >
-            Built for institutions that demand rigor
+            How we work
           </h2>
           <p className="text-slate-400 text-[17px] max-w-xl mx-auto leading-relaxed">
-            Universities, hospitals, NIH, and FDA take credibility seriously.
-            Here is what SHOLYTICS brings to every engagement.
+            Pharmacies, hospitals and research partners need to trust the tools they use.
+            Here is what SHOLYTICS commits to.
           </p>
         </motion.div>
 
@@ -84,7 +84,7 @@ export default function Credibility() {
             className="px-4 py-2 rounded-lg font-mono text-[12px] font-bold text-orange-400 border"
             style={{ background: 'rgba(249,115,22,0.1)', borderColor: 'rgba(249,115,22,0.3)' }}
           >
-            ✓ Verified Active Entity
+            ✓ Registered Entity
           </div>
         </motion.div>
       </div>

@@ -101,23 +101,23 @@ export default function Hero() {
           className="font-bold leading-[1.05] tracking-tight mb-3"
           style={{ fontSize:'clamp(2.8rem, 6.5vw, 5rem)' }}
         >
-          AI-Powered Healthcare Innovation
+          Healthcare intelligence,
         </motion.h1>
         <motion.span
           initial={{ opacity:0, y:50 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.7, delay:0.2 }}
           className="block font-bold leading-[1.05] tracking-tight mb-8 orange-gradient-text"
           style={{ fontSize:'clamp(2.8rem, 6.5vw, 5rem)' }}
         >
-          for Research, Prevention &amp; Better Outcomes
+          starting with medication supply.
         </motion.span>
 
         <motion.p
           initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:0.6, delay:0.4 }}
           className="text-slate-400 text-[17px] leading-relaxed max-w-[580px] mb-10"
         >
-          SHOLYTICS develops AI research platforms advancing healthcare through clinical decision support,
-          early detection, drug shortage prediction, and precision medicine — improving outcomes for
-          patients across America.
+          Our first product, DrugAI, helps pharmacy and hospital procurement teams see which
+          medications may run out before the next delivery, why, and what to follow up on. It is a
+          prototype, and we are looking for design partners to shape it.
         </motion.p>
 
         <motion.div
@@ -125,16 +125,16 @@ export default function Hero() {
           className="flex gap-4 flex-wrap mb-16"
         >
           <button
-            onClick={() => scrollTo('#medaicare')}
+            onClick={() => scrollTo('#drugai')}
             className="px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl text-[15px] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(249,115,22,0.35)]"
           >
-            Explore MedAI Care
+            Explore DrugAI
           </button>
           <button
             onClick={() => scrollTo('#contact')}
             className="px-8 py-3.5 border border-white/20 hover:border-white/45 hover:bg-white/5 text-white font-semibold rounded-xl text-[15px] transition-all duration-200"
           >
-            Request Partnership
+            Become a Design Partner
           </button>
         </motion.div>
 

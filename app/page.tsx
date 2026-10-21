@@ -6,7 +6,6 @@ import DrugAI from '@/components/DrugAI'
 import Research from '@/components/Research'
 import Imagery from '@/components/Imagery'
 import Mission from '@/components/Mission'
-import Divisions from '@/components/Divisions'
 import Credibility from '@/components/Credibility'
 import Team from '@/components/Team'
 import Partners from '@/components/Partners'
@@ -25,7 +24,6 @@ export default function Home() {
         <Research />
         <Imagery />
         <Mission />
-        <Divisions />
         <Credibility />
         <Team />
         <Partners />

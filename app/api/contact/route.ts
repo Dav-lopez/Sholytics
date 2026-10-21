@@ -4,9 +4,12 @@ import { NextRequest, NextResponse } from 'next/server'
 interface ContactPayload {
   name: string
   org: string
+  orgType: string
   email: string
   type: string
+  workflow: string
   msg: string
+  website: string // honeypot: must stay empty
 }
 
 const FALLBACK_EMAIL = 'management@sholytics.org'
@@ -17,6 +20,8 @@ function validate(body: Partial<ContactPayload>): string | null {
   if (!body.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) return 'Valid email is required'
   if (!body.msg?.trim()) return 'Message is required'
   if ((body.msg?.length ?? 0) > 5000) return 'Message is too long (5,000 characters maximum)'
+  if ((body.workflow?.length ?? 0) > 3000) return 'Workflow answer is too long (3,000 characters maximum)'
+  if ((body.name?.length ?? 0) > 200 || (body.org?.length ?? 0) > 200) return 'Name or organization is too long'
   return null
 }
 
@@ -44,6 +49,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Invalid request' }, { status: 400 })
   }
 
+  // Honeypot filled: almost certainly a bot. Report success so it learns nothing, send nothing.
+  if (body.website?.trim()) {
+    return NextResponse.json({ success: true }, { status: 200 })
+  }
+
   const error = validate(body)
   if (error) {
     return NextResponse.json({ success: false, error }, { status: 400 })
@@ -65,6 +75,8 @@ export async function POST(req: NextRequest) {
   const org = body.org?.trim() ?? ''
   const email = body.email!.trim()
   const type = body.type?.trim() || 'General Inquiry'
+  const orgType = body.orgType?.trim() ?? ''
+  const workflow = body.workflow?.trim() ?? ''
   const msg = body.msg!.trim()
 
   try {
@@ -84,12 +96,14 @@ export async function POST(req: NextRequest) {
           <p><strong>Name:</strong> ${escapeHtml(name)}</p>
           <p><strong>Organization:</strong> ${escapeHtml(org || 'Not provided')}</p>
           <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-          <p><strong>Type:</strong> ${escapeHtml(type)}</p>
+          <p><strong>Organization type:</strong> ${escapeHtml(orgType || 'Not provided')}</p>
+          <p><strong>Inquiry type:</strong> ${escapeHtml(type)}</p>
+          <p><strong>Current stock-vs-delivery workflow:</strong> ${escapeHtml(workflow || 'Not provided').replace(/\n/g, '<br/>')}</p>
           <hr/>
           <p><strong>Message:</strong></p>
           <p>${escapeHtml(msg).replace(/\n/g, '<br/>')}</p>
         `,
-        text: `Name: ${name}\nOrganization: ${org || 'Not provided'}\nEmail: ${email}\nType: ${type}\n\n${msg}`,
+        text: `Name: ${name}\nOrganization: ${org || 'Not provided'}\nOrganization type: ${orgType || 'Not provided'}\nEmail: ${email}\nInquiry type: ${type}\nCurrent workflow: ${workflow || 'Not provided'}\n\n${msg}`,
       }),
     })
 

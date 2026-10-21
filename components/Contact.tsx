@@ -1,10 +1,11 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { CONTACT_CHANNELS, INQUIRY_TYPES } from '@/lib/data'
+import { CONTACT_CHANNELS, INQUIRY_TYPES, ORG_TYPES } from '@/lib/data'
 
 export default function Contact() {
-  const [form, setForm] = useState({ name:'', org:'', email:'', type:INQUIRY_TYPES[0], msg:'' })
+  // `website` is a honeypot: hidden from people, often filled in by bots.
+  const [form, setForm] = useState({ name:'', org:'', orgType:'', email:'', type:INQUIRY_TYPES[0], workflow:'', msg:'', website:'' })
   const [errors, setErrors] = useState<Record<string,string>>({})
   const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')
   const [serverError, setServerError] = useState('')
@@ -60,8 +61,9 @@ export default function Contact() {
             Partner with SHOLYTICS
           </h2>
           <p className="text-slate-400 text-[17px] max-w-xl leading-relaxed">
-            We welcome proposals from universities, hospitals, government agencies, and investors
-            aligned with our mission to advance AI-driven healthcare research.
+            Pharmacies and hospital pharmacy teams: join the DrugAI design-partner program. We also
+            welcome research collaborators, advisors and investors. Please do not include patient
+            information in your message.
           </p>
         </motion.div>
 
@@ -109,7 +111,7 @@ export default function Contact() {
             {status === 'success' ? (
               <div className="text-center py-10">
                 <div className="text-5xl mb-4">✓</div>
-                <h3 className="text-xl font-bold mb-2">Proposal received</h3>
+                <h3 className="text-xl font-bold mb-2">Message received</h3>
                 <p className="text-slate-400 text-[14px] leading-relaxed">
                   Thank you, {form.name}. We&apos;ll respond within 2 business days at{' '}
                   <strong className="text-orange-400">{form.email}</strong>
@@ -119,31 +121,46 @@ export default function Contact() {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Full Name *</label>
-                    <input className={inputClass('name')} value={form.name}
+                    <label htmlFor="contact-name" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Full Name *</label>
+                    <input id="contact-name" autoComplete="name" className={inputClass('name')} value={form.name}
                       onChange={e => { setForm({...form,name:e.target.value}); setErrors({...errors,name:''}) }}
                       placeholder="Your name" style={{ fontFamily:'inherit' }} />
                     {errors.name && <p className="text-[11px] text-red-400 mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Organization</label>
-                    <input className={inputClass('org')} value={form.org}
+                    <label htmlFor="contact-org" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Organization</label>
+                    <input id="contact-org" autoComplete="organization" className={inputClass('org')} value={form.org}
                       onChange={e => setForm({...form,org:e.target.value})}
                       placeholder="Institution / Company" style={{ fontFamily:'inherit' }} />
                   </div>
                 </div>
 
-                <div className="mb-4">
-                  <label className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Email Address *</label>
-                  <input className={inputClass('email')} type="email" value={form.email}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label htmlFor="contact-email" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Email Address *</label>
+                    <input id="contact-email" autoComplete="email" className={inputClass('email')} type="email" value={form.email}
                     onChange={e => { setForm({...form,email:e.target.value}); setErrors({...errors,email:''}) }}
-                    placeholder="you@organization.org" style={{ fontFamily:'inherit' }} />
-                  {errors.email && <p className="text-[11px] text-red-400 mt-1">{errors.email}</p>}
+                      placeholder="you@organization.org" style={{ fontFamily:'inherit' }} />
+                    {errors.email && <p className="text-[11px] text-red-400 mt-1">{errors.email}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="contact-org-type" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Organization Type</label>
+                    <select
+                      id="contact-org-type"
+                      className={inputClass('orgType')}
+                      value={form.orgType} onChange={e => setForm({...form,orgType:e.target.value})}
+                      style={{ fontFamily:'inherit', background:'#0d1526' }}
+                    >
+                      <option value="">Select…</option>
+                      {ORG_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Inquiry Type</label>
+                  <label htmlFor="contact-type" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Inquiry Type</label>
                   <select
+                    id="contact-type"
                     className={inputClass('type')}
                     value={form.type} onChange={e => setForm({...form,type:e.target.value})}
                     style={{ fontFamily:'inherit', background:'#0d1526' }}
@@ -152,9 +169,31 @@ export default function Contact() {
                   </select>
                 </div>
 
-                <div className="mb-6">
-                  <label className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Message *</label>
+                <div className="mb-4">
+                  <label htmlFor="contact-workflow" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">
+                    How does your team check stock against deliveries today? <span className="font-normal text-slate-500">(optional)</span>
+                  </label>
                   <textarea
+                    id="contact-workflow"
+                    className={`${inputClass('workflow')} resize-y min-h-[80px]`}
+                    value={form.workflow}
+                    onChange={e => setForm({...form,workflow:e.target.value})}
+                    placeholder="e.g. a weekly spreadsheet, the wholesaler portal, our pharmacy system…"
+                    style={{ fontFamily:'inherit' }}
+                  />
+                </div>
+
+                {/* Honeypot: hidden from people and assistive tech; bots tend to fill it. */}
+                <div aria-hidden="true" style={{ position:'absolute', left:'-10000px', width:1, height:1, overflow:'hidden' }}>
+                  <label htmlFor="contact-website">Website</label>
+                  <input id="contact-website" tabIndex={-1} autoComplete="off" value={form.website}
+                    onChange={e => setForm({...form,website:e.target.value})} />
+                </div>
+
+                <div className="mb-6">
+                  <label htmlFor="contact-msg" className="block text-xs font-semibold text-slate-300 mb-2 tracking-wide">Message *</label>
+                  <textarea
+                    id="contact-msg"
                     className={`${inputClass('msg')} resize-y min-h-[120px]`}
                     value={form.msg}
                     onChange={e => { setForm({...form,msg:e.target.value}); setErrors({...errors,msg:''}) }}
@@ -176,7 +215,7 @@ export default function Contact() {
                   className="w-full py-4 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-500/50 text-white font-bold rounded-xl text-[15px] transition-all duration-200 hover:shadow-[0_8px_30px_rgba(249,115,22,0.35)]"
                   style={{ fontFamily:'inherit' }}
                 >
-                  {status === 'loading' ? 'Sending…' : 'Send Proposal →'}
+                  {status === 'loading' ? 'Sending…' : 'Send Message →'}
                 </button>
 
                 <p className="text-center text-[12px] text-slate-600 mt-4">

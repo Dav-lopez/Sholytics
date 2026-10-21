@@ -94,18 +94,6 @@ body {
 }
 .research-card:hover::before { opacity: 1; }
 
-/* ─── Division row hover indicator ───────────────────────────────────────── */
-.division-row::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(to bottom, #F97316, #FBBF24);
-  opacity: 0;
-  transition: opacity 0.22s ease;
-}
-.division-row:hover::before { opacity: 1; }
-
 /* ─── Bar fill transition ─────────────────────────────────────────────────── */
 .bar-fill {
   transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -149,9 +137,4 @@ body {
   grid-row: span 2;
 }
 
-/* ─── Division row grid ───────────────────────────────────────────────────── */
-@media (min-width: 768px) {
-  .division-row-grid {
-    grid-template-columns: 240px 1fr 32px;
-  }
-}
+

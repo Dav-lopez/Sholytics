@@ -13,18 +13,15 @@ export default function Hero() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    let animId: number
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let animId = 0
+    let running = false
+    let visible = true
     let W = 0, H = 0, mx = 0, my = 0
+    const LINK_DISTANCE = 110
 
     interface P { x:number; y:number; vx:number; vy:number; r:number; alpha:number; hue:number; reset():void }
     const particles: P[] = []
-
-    const resize = () => {
-      W = canvas.width = canvas.offsetWidth
-      H = canvas.height = canvas.offsetHeight
-      mx = W / 2; my = H / 2
-    }
-    window.addEventListener('resize', resize); resize()
 
     const make = (): P => ({
       x: Math.random()*W, y: Math.random()*H,
@@ -33,42 +30,87 @@ export default function Hero() {
       hue: Math.random()>0.5 ? 25 : 42,
       reset() { Object.assign(this, make()) }
     })
-    for (let i=0; i<130; i++) particles.push(make())
+
+    // Fewer particles on small screens: the line pass below is O(n²) per frame.
+    const targetCount = () => (W < 640 ? 45 : W < 1024 ? 80 : 120)
+
+    const resize = () => {
+      W = canvas.width = canvas.offsetWidth
+      H = canvas.height = canvas.offsetHeight
+      mx = W / 2; my = H / 2
+      const count = targetCount()
+      while (particles.length < count) particles.push(make())
+      particles.length = count
+      if (!running) drawFrame(false)
+    }
+
+    const drawFrame = (move: boolean) => {
+      ctx.clearRect(0,0,W,H)
+      for (const p of particles) {
+        if (move) {
+          p.x += p.vx + (mx-W/2)*0.00005
+          p.y += p.vy + (my-H/2)*0.00005
+          if (p.x<-5||p.x>W+5||p.y<-5||p.y>H+5) p.reset()
+        }
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+        ctx.fillStyle = `hsla(${p.hue},88%,62%,${p.alpha})`; ctx.fill()
+      }
+      ctx.lineWidth = 0.5
+      for (let i=0; i<particles.length; i++) {
+        for (let j=i+1; j<particles.length; j++) {
+          const dx=particles[i].x-particles[j].x
+          if (dx > LINK_DISTANCE || dx < -LINK_DISTANCE) continue
+          const dy=particles[i].y-particles[j].y
+          if (dy > LINK_DISTANCE || dy < -LINK_DISTANCE) continue
+          const d=Math.sqrt(dx*dx+dy*dy)
+          if (d<LINK_DISTANCE) {
+            ctx.beginPath()
+            ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y)
+            ctx.strokeStyle=`rgba(249,115,22,${0.09*(1-d/LINK_DISTANCE)})`; ctx.stroke()
+          }
+        }
+      }
+    }
+
+    const loop = () => {
+      drawFrame(true)
+      animId = requestAnimationFrame(loop)
+    }
+    const start = () => {
+      if (running || reduceMotion || !visible || document.hidden) return
+      running = true
+      animId = requestAnimationFrame(loop)
+    }
+    const stop = () => {
+      running = false
+      cancelAnimationFrame(animId)
+    }
 
     const onMove = (e: MouseEvent) => {
       const r = canvas.getBoundingClientRect()
       mx = e.clientX - r.left; my = e.clientY - r.top
     }
-    window.addEventListener('mousemove', onMove)
+    const onVisibility = () => (document.hidden ? stop() : start())
 
-    const draw = () => {
-      ctx.clearRect(0,0,W,H)
-      for (const p of particles) {
-        p.x += p.vx + (mx-W/2)*0.00005
-        p.y += p.vy + (my-H/2)*0.00005
-        if (p.x<-5||p.x>W+5||p.y<-5||p.y>H+5) p.reset()
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
-        ctx.fillStyle = `hsla(${p.hue},88%,62%,${p.alpha})`; ctx.fill()
-      }
-      for (let i=0; i<particles.length; i++) {
-        for (let j=i+1; j<particles.length; j++) {
-          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y
-          const d=Math.sqrt(dx*dx+dy*dy)
-          if (d<110) {
-            ctx.beginPath()
-            ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y)
-            ctx.strokeStyle=`rgba(249,115,22,${0.09*(1-d/110)})`; ctx.lineWidth=0.5; ctx.stroke()
-          }
-        }
-      }
-      animId = requestAnimationFrame(draw)
-    }
-    draw()
+    // Pause when the hero is scrolled out of view.
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      if (visible) start(); else stop()
+    })
+    observer.observe(canvas)
+
+    window.addEventListener('resize', resize)
+    document.addEventListener('visibilitychange', onVisibility)
+    if (!reduceMotion) window.addEventListener('mousemove', onMove)
+    resize()
+    start()
 
     return () => {
+      stop()
+      observer.disconnect()
       window.removeEventListener('resize', resize)
+      document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('mousemove', onMove)
-      cancelAnimationFrame(animId)
     }
   }, [])
 

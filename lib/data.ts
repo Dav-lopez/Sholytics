@@ -241,3 +241,12 @@ export const INQUIRY_TYPES = [
   'Media / Press',
   'General Inquiry',
 ]
+
+export const ORG_TYPES = [
+  'Independent pharmacy',
+  'Pharmacy group',
+  'Hospital pharmacy / procurement',
+  'University or research group',
+  'Investor',
+  'Other',
+]

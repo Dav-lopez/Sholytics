@@ -1,10 +1,9 @@
 'use client'
 const FOOTER_LINKS = {
   Products: [
-    'DrugAI', 'MedAI Care (research)', 'Intelligence Exchange',
-    'Product roadmap',
+    'DrugAI (prototype)', 'Clinical AI research', 'Product roadmap',
   ],
-  Company: ['About', 'Mission', 'Team', 'Credibility', 'Contact'],
+  Company: ['About', 'Mission', 'Team', 'Credibility', 'Contact', 'Privacy notice'],
   Contact: [
     { label:'management@sholytics.org',    href:'mailto:management@sholytics.org'    },
     { label:'partnerships@sholytics.org',  href:'mailto:partnerships@sholytics.org'  },
@@ -14,8 +13,7 @@ const FOOTER_LINKS = {
 }
 
 const SECTION_IDS: Record<string, string> = {
-  'DrugAI':'#drugai','MedAI Care (research)':'#research','Intelligence Exchange':'#research',
-  'Product roadmap':'#research',
+  'DrugAI (prototype)':'#drugai','Clinical AI research':'#research','Product roadmap':'#research',
   'About':'#about','Mission':'#mission','Team':'#team','Credibility':'#credibility','Contact':'#contact',
 }
 
@@ -34,7 +32,7 @@ export default function Footer() {
               <span className="font-mono font-bold text-white tracking-[0.1em] text-[14px]">SHOLYTICS</span>
             </div>
             <p className="text-[13px] text-slate-500 leading-[1.75] mb-5">
-              Advancing healthcare through AI-powered research, clinical decision support, and better patient outcomes — across America.
+              Medication supply intelligence for pharmacy and procurement teams, starting with the DrugAI prototype, plus a clinical AI research track with university partners.
             </p>
             <div className="rounded-lg px-4 py-3 border" style={{ background:'rgba(249,115,22,0.05)', borderColor:'rgba(249,115,22,0.15)' }}>
               <p className="font-mono text-[10px] text-orange-500 tracking-widest uppercase mb-1">Legal</p>
@@ -60,7 +58,15 @@ export default function Footer() {
           {/* Company */}
           <div>
             <p className="font-mono text-[10px] text-orange-500 tracking-[0.12em] uppercase mb-5">Company</p>
-            {FOOTER_LINKS.Company.map(item => (
+            {FOOTER_LINKS.Company.map(item => item === 'Privacy notice' ? (
+              <a
+                key={item}
+                href="/privacy"
+                className="block text-[13px] text-slate-500 hover:text-orange-400 mb-2.5 transition-colors duration-200"
+              >
+                {item}
+              </a>
+            ) : (
               <button
                 key={item}
                 onClick={() => scrollTo(SECTION_IDS[item] || '#')}
@@ -97,7 +103,7 @@ export default function Footer() {
           className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-6 border-t"
           style={{ borderColor:'rgba(249,115,22,0.08)' }}
         >
-          <p className="text-[12px] text-slate-600">© 2025 SHOLYTICS LLC. All rights reserved.</p>
+          <p className="text-[12px] text-slate-600">© {new Date().getFullYear()} SHOLYTICS LLC. All rights reserved. · <a href="/privacy" className="hover:text-orange-400">Privacy</a></p>
           <p className="text-[12px] text-slate-600">Empowering Success, Igniting Innovation</p>
         </div>
       </div>

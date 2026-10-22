@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { INQUIRY_TYPES, ORG_TYPES } from '@/lib/data'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface ContactPayload {
@@ -13,15 +14,55 @@ interface ContactPayload {
 }
 
 const FALLBACK_EMAIL = 'management@sholytics.org'
+const MAX_BODY_BYTES = 20_000
+
+// ─── Rate limiting ────────────────────────────────────────────────────────────
+// Best-effort, per server instance: at most 5 submissions per IP per 10 minutes. Serverless
+// platforms run several short-lived instances, so this slows down casual abuse rather than
+// guaranteeing a hard limit; add a platform firewall rule (e.g. Vercel WAF rate limit on
+// /api/contact) for a strict one.
+const WINDOW_MS = 10 * 60 * 1000
+const MAX_PER_WINDOW = 5
+const hits = new Map<string, number[]>()
+
+function rateLimited(ip: string, now = Date.now()): boolean {
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS)
+  if (recent.length >= MAX_PER_WINDOW) {
+    hits.set(ip, recent)
+    return true
+  }
+  recent.push(now)
+  hits.set(ip, recent)
+  if (hits.size > 5_000) {
+    for (const [key, times] of hits) {
+      if (times.every((t) => now - t >= WINDOW_MS)) hits.delete(key)
+    }
+  }
+  return false
+}
+
+function clientIp(req: NextRequest): string {
+  return (
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip') ||
+    'unknown'
+  )
+}
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 function validate(body: Partial<ContactPayload>): string | null {
+  for (const key of ['name', 'org', 'orgType', 'email', 'type', 'workflow', 'msg', 'website'] as const) {
+    if (body[key] !== undefined && typeof body[key] !== 'string') return 'Invalid request'
+  }
   if (!body.name?.trim()) return 'Name is required'
   if (!body.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) return 'Valid email is required'
   if (!body.msg?.trim()) return 'Message is required'
   if ((body.msg?.length ?? 0) > 5000) return 'Message is too long (5,000 characters maximum)'
   if ((body.workflow?.length ?? 0) > 3000) return 'Workflow answer is too long (3,000 characters maximum)'
   if ((body.name?.length ?? 0) > 200 || (body.org?.length ?? 0) > 200) return 'Name or organization is too long'
+  if ((body.email?.length ?? 0) > 254) return 'Email address is too long'
+  if (body.orgType?.trim() && !(ORG_TYPES as readonly string[]).includes(body.orgType.trim())) return 'Choose an organization type from the list'
+  if (body.type?.trim() && !(INQUIRY_TYPES as readonly string[]).includes(body.type.trim())) return 'Choose an inquiry type from the list'
   return null
 }
 
@@ -42,9 +83,27 @@ function escapeHtml(value: string): string {
 // Without RESEND_API_KEY the form does NOT pretend to succeed: it asks the visitor to
 // email us directly, so no enquiry is silently lost.
 export async function POST(req: NextRequest) {
+  if (Number(req.headers.get('content-length') ?? 0) > MAX_BODY_BYTES) {
+    return NextResponse.json({ success: false, error: 'Message is too large' }, { status: 413 })
+  }
+  if (rateLimited(clientIp(req))) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: `Too many messages from your network. Please wait a few minutes, or email us at ${FALLBACK_EMAIL}.`,
+      },
+      { status: 429, headers: { 'Retry-After': '600' } },
+    )
+  }
+
   let body: Partial<ContactPayload>
   try {
-    body = await req.json()
+    const raw = await req.text()
+    if (raw.length > MAX_BODY_BYTES) {
+      return NextResponse.json({ success: false, error: 'Message is too large' }, { status: 413 })
+    }
+    body = JSON.parse(raw)
+    if (!body || typeof body !== 'object' || Array.isArray(body)) throw new Error('not an object')
   } catch {
     return NextResponse.json({ success: false, error: 'Invalid request' }, { status: 400 })
   }

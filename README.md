@@ -87,6 +87,23 @@ was never delivered.
 
 ---
 
+## 💬 Chat (SHOLYTICS Support)
+
+The “Chat with us” button opens the SHOLYTICS help desk, which is hosted by the DrugAI app so the
+same team answers chats from the website and the apps. Grace, an AI assistant, answers first;
+visitors can ask for a person at any time, and staff reply from **Admin → Support inbox** in the app.
+
+Set one variable in Vercel (the button stays hidden until it is set):
+
+```env
+NEXT_PUBLIC_SUPPORT_API_URL=https://app.sholytics.org   # the DrugAI app's address
+```
+
+The app accepts chats from `https://sholytics.org` and `https://www.sholytics.org` by default; other
+sites are added with `SUPPORT_ALLOWED_ORIGINS` in the app's settings.
+
+---
+
 ## 🔍 SEO Checklist
 
 - [x] Full `metadata` with `metadataBase`, `openGraph`, `twitter`, `robots`, `alternates`
@@ -130,6 +147,7 @@ npx vercel          # follow prompts — framework auto-detected
 Environment variables to add in Vercel dashboard:
 - `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM`
 - `NEXT_PUBLIC_SITE_URL=https://sholytics.org`
+- `NEXT_PUBLIC_SUPPORT_API_URL` (the DrugAI app's address, for the chat)
 
 ---
 

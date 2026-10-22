@@ -218,7 +218,13 @@ export default function Contact() {
                   {status === 'loading' ? 'Sending…' : 'Send Message →'}
                 </button>
 
-                <p className="text-center text-[12px] text-slate-600 mt-4">
+                <p className="text-[12px] text-slate-500 mt-4 leading-relaxed">
+                  We use these details only to reply to you and to follow up about your enquiry. Please
+                  don&apos;t include patient information. See our{' '}
+                  <a href="/privacy" className="text-orange-500/80 underline hover:text-orange-400">privacy notice</a>.
+                </p>
+
+                <p className="text-center text-[12px] text-slate-600 mt-3">
                   Or email directly:{' '}
                   <a href="mailto:management@sholytics.org" className="text-orange-500/70 hover:text-orange-400 transition-colors">
                     management@sholytics.org

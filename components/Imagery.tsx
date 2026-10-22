@@ -6,15 +6,15 @@ const IMAGES = [
   {
     src: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1000&q=80',
     alt: 'Clinician reviewing information on a screen',
-    label: 'MedAI Care',
-    sub: 'Clinical AI · research track',
+    label: 'Hospital pharmacy teams',
+    sub: 'Who DrugAI is for · design partners wanted',
     tall: true,
   },
   {
     src: 'https://images.unsplash.com/photo-1576671081837-49000212a370?w=700&q=80',
-    alt: 'Cancer research and imaging laboratory',
-    label: 'CancerAI',
-    sub: 'Oncology research · concept',
+    alt: 'Research laboratory',
+    label: 'University research partners',
+    sub: 'Clinical AI research track',
     tall: false,
   },
   {
@@ -26,16 +26,16 @@ const IMAGES = [
   },
   {
     src: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=700&q=80',
-    alt: 'Hospital operations',
-    label: 'Hospital Intelligence',
-    sub: 'Operations analytics · concept',
+    alt: 'Hospital corridor',
+    label: 'Procurement & supply chain',
+    sub: 'Who DrugAI is for',
     tall: false,
   },
   {
     src: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=700&q=80',
-    alt: 'Research laboratory',
-    label: 'Research Intelligence',
-    sub: 'Research discovery · concept',
+    alt: 'Laboratory equipment',
+    label: 'Public & de-identified data',
+    sub: 'How our research is done',
     tall: false,
   },
 ]
@@ -53,14 +53,14 @@ export default function Imagery() {
         >
           <div>
             <p className="font-mono text-xs text-orange-500 tracking-[0.12em] uppercase mb-3">
-              Healthcare AI in Practice
+              Where we&apos;re starting
             </p>
             <h2 className="font-bold leading-tight tracking-tight" style={{ fontSize: 'clamp(2rem,4vw,3rem)' }}>
-              From research to real lives
+              Built with the people who use it
             </h2>
           </div>
           <p className="text-slate-500 text-sm max-w-xs leading-relaxed md:text-right">
-            Each platform targets a distinct clinical environment — from hospital floors to rural telehealth.
+            DrugAI is for pharmacy and procurement teams. Clinical AI stays a research track, using public or de-identified data.
           </p>
         </motion.div>
 

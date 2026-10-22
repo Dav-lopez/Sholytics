@@ -42,6 +42,15 @@ export default function PrivacyPage() {
             message. If you email us directly, we receive your email and its contents.
           </p>
           <p>
+            If you use the chat, we receive your name (if you give it), your email address, your
+            messages, the page you started from, and a one-way scrambled form of your network address
+            that we use only to stop abuse. Grace, the first responder in the chat, is an AI assistant;
+            when an AI provider is switched on, your messages are sent to that provider to write
+            Grace&apos;s reply. Anything that looks like a date of birth, record number, ID or card
+            number is removed before a message is stored. A small random key is kept in your browser so
+            you can continue the chat; it is not a tracking cookie.
+          </p>
+          <p>
             We do not set advertising or tracking cookies, and this site does not use analytics. Our
             hosting provider keeps standard server logs (such as IP address and time of request) for
             security and reliability.
@@ -64,7 +73,9 @@ export default function PrivacyPage() {
         <Section title="Who handles it for us">
           <p>
             Form submissions are delivered to our inbox by an email delivery provider (Resend), and the
-            site is hosted by a cloud hosting provider. These providers process the information on our
+            site is hosted by a cloud hosting provider. Chats are stored in our help desk, which runs with
+            our DrugAI application on the same kind of hosting and database providers; if an AI provider is
+            enabled for Grace, it processes chat messages to write replies. These providers process the information on our
             behalf to deliver the service. We don&apos;t share it with anyone else unless the law
             requires it.
           </p>
@@ -72,7 +83,7 @@ export default function PrivacyPage() {
 
         <Section title="How long we keep it">
           <p>
-            We keep enquiries while we are in conversation with you and for up to 24 months afterwards,
+            We keep enquiries and chats while we are in conversation with you and for up to 24 months afterwards,
             then delete them, unless you become a customer or partner and a separate agreement applies.
           </p>
         </Section>

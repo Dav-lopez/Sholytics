@@ -2,6 +2,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { CONTACT_CHANNELS, INQUIRY_TYPES, ORG_TYPES } from '@/lib/data'
+import { FALLBACK_EMAIL, mailtoLink } from '@/lib/mailto'
+
+// The server tries the email service twice (up to about 17 seconds), so wait a little longer.
+const SUBMIT_TIMEOUT_MS = 25_000
 
 export default function Contact() {
   // `website` is a honeypot: hidden from people, often filled in by bots.
@@ -9,6 +13,9 @@ export default function Contact() {
   const [errors, setErrors] = useState<Record<string,string>>({})
   const [status, setStatus] = useState<'idle'|'loading'|'success'|'error'>('idle')
   const [serverError, setServerError] = useState('')
+  // True when the message wasn't delivered for a reason other than the visitor's input, so we
+  // offer to open it, already written, in their email app.
+  const [offerEmail, setOfferEmail] = useState(false)
 
   const validate = () => {
     const e: Record<string,string> = {}
@@ -23,23 +30,46 @@ export default function Contact() {
     if (!validate()) return
     setStatus('loading')
     setServerError('')
+    setOfferEmail(false)
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
+        signal: AbortSignal.timeout(SUBMIT_TIMEOUT_MS),
       })
-      const data = await res.json()
-      if (data.success) {
+      // A platform error page (e.g. a gateway timeout) is HTML, not JSON.
+      const data = await res.json().catch(() => null)
+      if (res.ok && data?.success) {
         setStatus('success')
-      } else {
-        setServerError(data.error || 'Something went wrong. Please try again.')
-        setStatus('error')
+        return
       }
-    } catch {
-      setServerError('Network error. Please email us directly at management@sholytics.org')
+      setServerError(data?.error || `We could not send your message. Please email us directly at ${FALLBACK_EMAIL}.`)
+      setOfferEmail(res.status !== 400)
+      setStatus('error')
+    } catch (err) {
+      const timedOut = err instanceof DOMException && (err.name === 'TimeoutError' || err.name === 'AbortError')
+      setServerError(
+        timedOut
+          ? `This is taking too long, so we may not have received your message. Please email us at ${FALLBACK_EMAIL}.`
+          : `We could not reach our server. Please check your connection, or email us at ${FALLBACK_EMAIL}.`,
+      )
+      setOfferEmail(true)
       setStatus('error')
     }
+  }
+
+  const emailDraft = () => {
+    const details = [
+      `Name: ${form.name}`,
+      form.org && `Organization: ${form.org}`,
+      form.orgType && `Organization type: ${form.orgType}`,
+      form.workflow && `Current workflow: ${form.workflow}`,
+    ].filter(Boolean)
+    return mailtoLink(
+      `[${form.type}] Enquiry from ${form.name}${form.org ? ` (${form.org})` : ''}`,
+      `${form.msg}\n\n${details.join('\n')}`,
+    )
   }
 
   const inputClass = (key: string) =>
@@ -204,8 +234,16 @@ export default function Contact() {
                 </div>
 
                 {serverError && (
-                  <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/25 text-[13px] text-red-400">
+                  <div role="alert" className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/25 text-[13px] text-red-400">
                     {serverError}
+                    {offerEmail && (
+                      <a
+                        href={emailDraft()}
+                        className="mt-2 block font-semibold text-orange-400 underline underline-offset-2 hover:text-orange-300"
+                      >
+                        Open this message in your email app →
+                      </a>
+                    )}
                   </div>
                 )}
 

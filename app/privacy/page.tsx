@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Privacy notice',
@@ -21,9 +22,9 @@ export default function PrivacyPage() {
   return (
     <main style={{ background: '#0a0f1e', minHeight: '100vh' }}>
       <div className="max-w-3xl mx-auto px-6 md:px-8 py-16">
-        <a href="/" className="font-mono text-xs tracking-[0.12em] uppercase text-orange-500 hover:text-orange-400">
+        <Link href="/" className="font-mono text-xs tracking-[0.12em] uppercase text-orange-500 hover:text-orange-400">
           ← SHOLYTICS
-        </a>
+        </Link>
         <h1 className="mt-6 font-bold tracking-tight text-white" style={{ fontSize: 'clamp(2rem,4vw,2.75rem)' }}>
           Privacy notice
         </h1>

@@ -6,10 +6,21 @@
 // Set NEXT_PUBLIC_SUPPORT_API_URL to the app's address (e.g. https://app.sholytics.org). The app
 // must list this site in SUPPORT_ALLOWED_ORIGINS (sholytics.org and www are allowed by default).
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { FALLBACK_EMAIL, mailtoLink } from '@/lib/mailto'
 
 const API = process.env.NEXT_PUBLIC_SUPPORT_API_URL?.replace(/\/$/, '') ?? ''
 const TOKEN_KEY = 'sholytics-support-token'
 const POLL_MS = 4000
+const REQUEST_TIMEOUT_MS = 15_000
+/** Consecutive failed refreshes before we tell the visitor the connection is having trouble. */
+const POLL_FAILURES_BEFORE_NOTICE = 3
+
+/**
+ * The help desk can't be reached: offline, timed out, or a server error. Different from a
+ * refusal (validation, rate limit), which has a message for the visitor and won't be fixed by
+ * emailing instead.
+ */
+class ChatUnavailable extends Error {}
 
 type Message = {
   id: string
@@ -46,15 +57,22 @@ function writeToken(token: string | null) {
 }
 
 async function call<T>(path: string, token: string | null, body?: unknown): Promise<T> {
-  const res = await fetch(`${API}${path}`, {
-    method: body === undefined ? 'GET' : 'POST',
-    headers: {
-      ...(body === undefined ? {} : { 'content-type': 'application/json' }),
-      ...(token ? { 'x-support-token': token } : {}),
-    },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  })
+  let res: Response
+  try {
+    res = await fetch(`${API}${path}`, {
+      method: body === undefined ? 'GET' : 'POST',
+      headers: {
+        ...(body === undefined ? {} : { 'content-type': 'application/json' }),
+        ...(token ? { 'x-support-token': token } : {}),
+      },
+      body: body === undefined ? undefined : JSON.stringify(body),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    })
+  } catch {
+    throw new ChatUnavailable('Chat is unavailable right now.')
+  }
   const data = await res.json().catch(() => null)
+  if (res.status >= 500 || (!res.ok && data === null)) throw new ChatUnavailable('Chat is unavailable right now.')
   if (!res.ok) {
     const fields = data?.errors ? Object.values(data.errors as Record<string, string>)[0] : null
     throw new Error(data?.error || fields || 'Something went wrong. Please try again.')
@@ -98,6 +116,9 @@ export default function ChatWidget() {
   const [draft, setDraft] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // The help desk couldn't be reached; offer email instead of a dead end.
+  const [unavailable, setUnavailable] = useState(false)
+  const [pollFailures, setPollFailures] = useState(0)
   const end = useRef<HTMLDivElement>(null)
 
   useEffect(() => setToken(readToken()), [])
@@ -111,12 +132,16 @@ export default function ChatWidget() {
       setConversation(data.conversation)
       setTeamOpen(data.open)
       setHours(data.hoursLabel)
+      setUnavailable(false)
+      setPollFailures(0)
       if (token && !data.conversation) {
         writeToken(null)
         setToken(null)
       }
-    } catch {
-      // Try again on the next poll.
+    } catch (err) {
+      // Keep polling; after a few misses in a row, say so.
+      setPollFailures((n) => n + 1)
+      if (err instanceof ChatUnavailable) setUnavailable(true)
     }
   }, [open, token])
 
@@ -155,8 +180,10 @@ export default function ChatWidget() {
       setToken(data.token)
       setConversation(data.conversation)
       setDraft('')
+      setUnavailable(false)
     } catch (err) {
-      setError((err as Error).message)
+      if (err instanceof ChatUnavailable) setUnavailable(true)
+      else setError((err as Error).message)
     } finally {
       setBusy(false)
     }
@@ -170,8 +197,13 @@ export default function ChatWidget() {
     try {
       setConversation(await call<Conversation>('/api/support/public/chat/messages', token, { message: draft }))
       setDraft('')
+      setPollFailures(0)
     } catch (err) {
-      setError((err as Error).message)
+      // The draft is kept so nothing the visitor typed is lost.
+      if (err instanceof ChatUnavailable) {
+        setPollFailures(POLL_FAILURES_BEFORE_NOTICE)
+        setError('Your message didn’t send because chat is unavailable right now. Try again, or email us.')
+      } else setError((err as Error).message)
     } finally {
       setBusy(false)
     }
@@ -183,11 +215,21 @@ export default function ChatWidget() {
     try {
       setConversation(await call<Conversation>('/api/support/public/chat/action', token, body))
     } catch (err) {
-      setError((err as Error).message)
+      setError(
+        err instanceof ChatUnavailable
+          ? 'Chat is unavailable right now. Try again in a moment, or email us.'
+          : (err as Error).message,
+      )
     } finally {
       setBusy(false)
     }
   }
+
+  const emailInstead = () =>
+    mailtoLink(
+      'Website chat',
+      [draft.trim() || 'Hello,', '', name.trim() && `Name: ${name.trim()}`].filter(Boolean).join('\n'),
+    )
 
   function newChat() {
     writeToken(null)
@@ -230,7 +272,9 @@ export default function ChatWidget() {
           <header className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
             <div className="min-w-0">
               <h2 className="text-sm font-semibold text-white">SHOLYTICS</h2>
-              <p className="text-xs text-slate-400">{statusLine(conversation, teamOpen, hours)}</p>
+              <p className="text-xs text-slate-400">
+                {unavailable && !conversation ? 'Chat is offline. Email reaches the same team.' : statusLine(conversation, teamOpen, hours)}
+              </p>
             </div>
             <button type="button" aria-label="Close chat" onClick={() => setOpen(false)} className="rounded-md p-1 text-slate-400 hover:bg-white/5 hover:text-white">
               <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -239,7 +283,35 @@ export default function ChatWidget() {
             </button>
           </header>
 
-          {!conversation ? (
+          {!conversation && unavailable ? (
+            <div role="alert" className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
+              <p className="text-sm font-medium text-white">Chat is unavailable right now.</p>
+              <p className="text-sm leading-6 text-slate-400">
+                We can’t reach our help desk at the moment. Email us instead and the SHOLYTICS team will reply
+                by email.
+              </p>
+              <a
+                href={emailInstead()}
+                className="rounded-xl bg-orange-500 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-orange-600"
+              >
+                Email {FALLBACK_EMAIL}
+              </a>
+              {draft.trim() && <p className="text-[11px] text-slate-500">Your question is copied into the email.</p>}
+              <button
+                type="button"
+                onClick={() => {
+                  setUnavailable(false)
+                  void load()
+                }}
+                className="rounded-xl border border-white/15 px-4 py-2 text-sm text-slate-200 hover:bg-white/5"
+              >
+                Try chat again
+              </button>
+              <p className="text-[11px] leading-5 text-slate-500">
+                Or use the <a href="#contact" onClick={() => setOpen(false)} className="text-orange-500 hover:text-orange-400">contact form</a>.
+              </p>
+            </div>
+          ) : !conversation ? (
             <form onSubmit={start} className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4" noValidate>
               <p className="text-sm font-medium text-white">Hi, I’m Grace, SHOLYTICS’s AI assistant.</p>
               <p className="text-sm leading-6 text-slate-400">
@@ -321,6 +393,12 @@ export default function ChatWidget() {
               )}
 
               <form onSubmit={send} className="grid gap-2 border-t border-white/10 px-4 py-3">
+                {pollFailures >= POLL_FAILURES_BEFORE_NOTICE && (
+                  <p role="status" className="rounded-lg bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+                    Connection problem — we’re retrying. If it’s urgent,{' '}
+                    <a href={emailInstead()} className="font-semibold underline underline-offset-2">email us</a>.
+                  </p>
+                )}
                 {error && <p role="alert" className="text-xs text-red-400">{error}</p>}
                 <div className="flex items-end gap-2">
                   <textarea

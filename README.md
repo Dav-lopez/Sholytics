@@ -61,8 +61,10 @@ sholytics/
 │   ├── favicon.svg
 │   ├── robots.txt
 │   └── sitemap.xml
-├── .env.local.example       # Copy to .env.local and add keys
-└── vercel.json
+├── scripts/
+│   └── check-launch.mjs     # Post-deploy checks: npm run check:launch -- <url>
+├── tests/                   # npm test (contact form and email fallback)
+└── .env.local.example       # Copy to .env.local and add keys
 ```
 
 ---
@@ -85,6 +87,12 @@ Until `RESEND_API_KEY` is set, the form shows visitors a message asking them to 
 management@sholytics.org directly, rather than reporting success for a message that
 was never delivered.
 
+**When email delivery fails.** Each attempt to send waits at most 8 seconds. A timeout, network
+error, 429 or 5xx from Resend is tried once more with the same `Idempotency-Key`, so the enquiry
+is never sent twice. If it still fails, or Resend rejects it (bad key, unverified domain), the
+visitor is told so and offered **Open this message in your email app**, which opens an email to
+management@sholytics.org with their message already written. Nothing they typed is lost.
+
 ---
 
 ## 💬 Chat (SHOLYTICS Support)
@@ -102,7 +110,48 @@ NEXT_PUBLIC_SUPPORT_API_URL=https://app.sholytics.org   # the DrugAI app's addre
 The app accepts chats from `https://sholytics.org` and `https://www.sholytics.org` by default; other
 sites are added with `SUPPORT_ALLOWED_ORIGINS` in the app's settings.
 
+**If the app is down**, the chat doesn't dead-end: opening it shows *Chat is unavailable right
+now* with an **Email management@sholytics.org** button (their question copied in) and the contact
+form, which doesn't depend on the app. In a chat that loses its connection, a notice appears after
+three missed updates, unsent messages stay in the box, and it recovers by itself.
+
+The site's Content-Security-Policy only allows connections to this site and
+`NEXT_PUBLIC_SUPPORT_API_URL`, which is read at build time: change it, then redeploy.
+
 ---
+
+## ✅ Launch checks
+
+After every production deploy (and once after DNS changes):
+
+```bash
+npm run check:launch -- https://sholytics.org --support https://app.sholytics.org
+```
+
+It checks pages, the privacy notice, robots and sitemap (every address loads), the social image,
+404s, https redirect, the www address, security headers, that the contact form validates and
+traps spam (without sending email), and that the help desk is up, allows this site, answers, and
+is allowed by the site's CSP. Exit code 1 means something failed.
+
+Once after setting up Resend, add `--send-test` to send one real enquiry, then confirm it arrived
+in the management@sholytics.org inbox.
+
+### Keeping the 24-month privacy promise
+
+The privacy notice says enquiries and chats are deleted 24 months after the conversation ends.
+
+- **Chats** live in the DrugAI app, whose daily check deletes them automatically.
+- **Contact-form enquiries** arrive as emails, so they are deleted by hand: every quarter, in the
+  management@sholytics.org mailbox, delete website enquiries (subjects start with the inquiry type
+  in brackets) older than 24 months, unless the sender became a customer or partner. Also check
+  how long Resend keeps sent-email logs in its dashboard and keep it at or below 24 months.
+
+## 🧪 Tests
+
+```bash
+npm test        # contact form: validation, spam trap, rate limit, retries, timeouts, email fallback
+npm run lint
+```
 
 ## 🔍 SEO Checklist
 
@@ -127,11 +176,11 @@ sites are added with `SUPPORT_ALLOWED_ORIGINS` in the app's settings.
 | 6 | Roadmap | `#research` | Products with Prototype / Research / Concept status |
 | 7 | Imagery | `#imagery` | Photo mosaic |
 | 8 | Mission | `#mission` | Statement + pills |
-| 10 | Credibility | `#credibility` | For hospitals/universities |
-| 11 | Team | `#team` | 4 founders |
-| 12 | Partners | `#partners` | Kinds of partners sought (no named organizations) |
-| 13 | Contact | `#contact` | Live form → API |
-| 14 | Footer | — | Links, legal |
+| 9 | Credibility | `#credibility` | For hospitals/universities |
+| 10 | Team | `#team` | 4 founders |
+| 11 | Partners | `#partners` | Kinds of partners sought (no named organizations) |
+| 12 | Contact | `#contact` | Live form → API |
+| 13 | Footer | — | Links, legal |
 
 ---
 

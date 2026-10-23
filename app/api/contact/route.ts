@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { INQUIRY_TYPES, ORG_TYPES } from '@/lib/data'
+import { deliver } from '@/lib/contact-delivery'
+
+// Two send attempts of up to 8 seconds each fit comfortably.
+export const maxDuration = 30
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface ContactPayload {
@@ -125,6 +129,7 @@ export async function POST(req: NextRequest) {
       {
         success: false,
         error: `Our contact form is not available right now. Please email us directly at ${FALLBACK_EMAIL}.`,
+        fallbackEmail: FALLBACK_EMAIL,
       },
       { status: 503 },
     )
@@ -138,19 +143,12 @@ export async function POST(req: NextRequest) {
   const workflow = body.workflow?.trim() ?? ''
   const msg = body.msg!.trim()
 
-  try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: process.env.CONTACT_FROM || 'SHOLYTICS Website <contact@sholytics.org>',
-        to: [process.env.CONTACT_TO || FALLBACK_EMAIL],
-        reply_to: email,
-        subject: `[${type}] New inquiry from ${name}${org ? ` (${org})` : ''}`.slice(0, 200),
-        html: `
+  const payload = {
+    from: process.env.CONTACT_FROM || 'SHOLYTICS Website <contact@sholytics.org>',
+    to: [process.env.CONTACT_TO || FALLBACK_EMAIL],
+    reply_to: email,
+    subject: `[${type}] New inquiry from ${name}${org ? ` (${org})` : ''}`.slice(0, 200),
+    html: `
           <h2>New website inquiry</h2>
           <p><strong>Name:</strong> ${escapeHtml(name)}</p>
           <p><strong>Organization:</strong> ${escapeHtml(org || 'Not provided')}</p>
@@ -162,24 +160,20 @@ export async function POST(req: NextRequest) {
           <p><strong>Message:</strong></p>
           <p>${escapeHtml(msg).replace(/\n/g, '<br/>')}</p>
         `,
-        text: `Name: ${name}\nOrganization: ${org || 'Not provided'}\nOrganization type: ${orgType || 'Not provided'}\nEmail: ${email}\nInquiry type: ${type}\nCurrent workflow: ${workflow || 'Not provided'}\n\n${msg}`,
-      }),
-    })
-
-    if (!res.ok) {
-      console.error('[Contact API] Resend rejected the message', res.status, await res.text())
-      return NextResponse.json(
-        { success: false, error: `We could not send your message. Please email us directly at ${FALLBACK_EMAIL}.` },
-        { status: 502 },
-      )
-    }
-
-    return NextResponse.json({ success: true }, { status: 200 })
-  } catch (err) {
-    console.error('[Contact API Error]', err)
-    return NextResponse.json(
-      { success: false, error: `Server error. Please email us directly at ${FALLBACK_EMAIL}.` },
-      { status: 500 },
-    )
+    text: `Name: ${name}\nOrganization: ${org || 'Not provided'}\nOrganization type: ${orgType || 'Not provided'}\nEmail: ${email}\nInquiry type: ${type}\nCurrent workflow: ${workflow || 'Not provided'}\n\n${msg}`,
   }
+
+  const outcome = await deliver(apiKey, payload)
+  if (outcome === 'sent') return NextResponse.json({ success: true }, { status: 200 })
+  return NextResponse.json(
+    {
+      success: false,
+      error:
+        outcome === 'rejected'
+          ? `We could not send your message. Please email us directly at ${FALLBACK_EMAIL}.`
+          : `Our email service is not responding. Please try again in a few minutes, or email us directly at ${FALLBACK_EMAIL}.`,
+      fallbackEmail: FALLBACK_EMAIL,
+    },
+    { status: outcome === 'rejected' ? 502 : 503 },
+  )
 }

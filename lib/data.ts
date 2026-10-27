@@ -71,68 +71,19 @@ export const DIVISIONS: {
   desc: string
   note: string
   color: string
+  repo?: string
 }[] = [
-  {
-    icon: '💊',
-    name: 'DrugAI',
-    tag: 'Medication Supply Intelligence',
-    status: 'Prototype',
-    tagline: 'See supply gaps before they reach your shelf',
-    desc: 'Helps pharmacy and hospital procurement teams see which medications may run out before the next delivery, why, and what to follow up on. Uses inventory files and public shortage notices; no patient data.',
-    note: 'Now looking for design partners among independent pharmacies, pharmacy groups and hospital pharmacy teams.',
-    color: '#FBBF24',
-  },
-  {
-    icon: '🧬',
-    name: 'MedAI Care',
-    tag: 'Clinical Decision Support',
-    status: 'Research',
-    tagline: 'Clinical AI that keeps clinicians in control',
-    desc: 'A research track exploring clinical decision support with university partners and de-identified or public datasets. Any clinical product will follow model validation and an appropriate regulatory review.',
-    note: 'Research collaborations welcome. Not available as a clinical product.',
-    color: '#F97316',
-  },
-  {
-    icon: '🔗',
-    name: 'Intelligence Exchange',
-    tag: 'Shared Supply Signals',
-    status: 'Concept',
-    tagline: 'Independent by design. Connected by choice.',
-    desc: 'A future, opt-in way for participating organizations to share aggregated, non-patient supply signals, so regional shortages can be seen earlier than any one organization could alone.',
-    note: 'Planned only after DrugAI has active users and the governance is in place.',
-    color: '#34D399',
-  },
-  {
-    icon: '🔬',
-    name: 'CancerAI',
-    tag: 'Oncology Research',
-    status: 'Concept',
-    tagline: 'A long-term research interest',
-    desc: 'A possible future research line on evidence discovery for oncology researchers. It does not diagnose or treat cancer.',
-    note: 'Exploratory. Would require research partners and validated methods.',
-    color: '#FB923C',
-  },
-  {
-    icon: '🏥',
-    name: 'Hospital Intelligence',
-    tag: 'Operations Analytics',
-    status: 'Concept',
-    tagline: 'Operational visibility for hospitals',
-    desc: 'A possible later product for capacity, staffing and operational reporting, considered only if DrugAI hospital users ask for it.',
-    note: 'Not in development.',
-    color: '#A78BFA',
-  },
-  {
-    icon: '🧠',
-    name: 'Research Intelligence',
-    tag: 'Research Discovery',
-    status: 'Concept',
-    tagline: 'Organizing evidence for research teams',
-    desc: 'A possible tool for university and research teams to find literature and datasets, with every finding traceable to its source.',
-    note: 'Not in development.',
-    color: '#F97316',
-  },
+  {icon:'💊',name:'DrugAI',tag:'Medication Supply Intelligence',status:'Prototype',tagline:'Supply planning with explainable calculations',desc:'Inventory-based supply estimates and procurement review workflows. Development continues independently of the other products.',note:'Prototype; not a clinical or production-validated service.',color:'#FBBF24',repo:'drugai'},
+  {icon:'🏥',name:'Hospital Intelligence',tag:'Hospital Operations',status:'Prototype',tagline:'Explore ward capacity scenarios',desc:'Synthetic ward occupancy, staffed-bed changes, utilization thresholds and 24-hour scenario comparisons.',note:'Functional demonstration with synthetic data; not validated for hospital operations.',color:'#A78BFA',repo:'hospital-intelligence'},
+  {icon:'📦',name:'Pharmacy Intelligence',tag:'Inventory Operations',status:'Prototype',tagline:'Model inventory expiry and shortages',desc:'Synthetic FEFO lot allocation, daily stockout timelines, expiry exposure and demand sensitivity.',note:'Inventory simulation only; not a dispensing or medication recommendation tool.',color:'#34D399',repo:'pharmacy-intelligence'},
+  {icon:'🧾',name:'Insurance Intelligence',tag:'Claims Operations',status:'Prototype',tagline:'Review claims and remittance exceptions',desc:'Synthetic claims aging, payment reconciliation previews and exception detection without posting payments.',note:'Demonstration only; no live claims or payment integrations.',color:'#60A5FA',repo:'insurance-intelligence'},
+  {icon:'🔬',name:'Research Intelligence',tag:'Research Evidence',status:'Prototype',tagline:'Organize and pre-screen evidence',desc:'Searchable synthetic research records with configurable screening criteria and explicit exclusion reasons.',note:'Source links require independent verification; no scientific conclusions are automated.',color:'#F97316',repo:'research-intelligence'},
+  {icon:'🌍',name:'Public Health Intelligence',tag:'Aggregate Population Analytics',status:'Prototype',tagline:'Compare regional aggregate trends',desc:'Synthetic regional population trends and matched-period rate comparisons with missing-data safeguards.',note:'Not for surveillance decisions or causal inference.',color:'#2DD4BF',repo:'public-health-intelligence'},
+  {icon:'🧬',name:'MedAI Care',tag:'Care Coordination Workflow',status:'Prototype',tagline:'Organize follow-up tasks',desc:'Synthetic care-coordination task queues with status tracking; task creation and validation are under active development.',note:'No patient records, messaging, diagnosis or clinical decision support.',color:'#FB923C',repo:'medai-care'},
+  {icon:'🧠',name:'HealthAI',tag:'Health Information Tools',status:'Prototype',tagline:'Explore a personal reading-log demonstration',desc:'Early demonstration of a reading-log interface; healthcare-specific functionality is not yet established.',note:'Early prototype; not a healthcare service.',color:'#C084FC',repo:'healthai'},
+  {icon:'🎗️',name:'CancerAI',tag:'Oncology Evidence Discovery',status:'Prototype',tagline:'Explore oncology evidence records',desc:'Early oncology evidence discovery demonstration using non-patient records.',note:'Not a diagnostic, treatment or clinical recommendation tool.',color:'#F472B6',repo:'cancerai'},
 ]
+// Repository links are public source code, not live product deployments.
 
 // ─── TEAM ─────────────────────────────────────────────────────────────────────
 // Bios describe current roles; each co-founder should confirm their own bio.

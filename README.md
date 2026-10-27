@@ -218,3 +218,6 @@ Filed: August 19, 2025 · Status: Active
 ---
 
 © 2025 SHOLYTICS LLC. All rights reserved.
+
+## Healthcare portfolio section
+The public roadmap lists DrugAI and eight independent development repositories, with source links and conservative prototype labels. These are not links to live deployments. No real patient information, clinical efficacy or production readiness is claimed. Run `npm run build`, `npm run lint`, and `npm test` before merging. Update portfolio copy only after verifying implemented capabilities.

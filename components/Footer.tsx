@@ -1,7 +1,7 @@
 'use client'
 const FOOTER_LINKS = {
   Products: [
-    'DrugAI (prototype)', 'Clinical AI research', 'Product roadmap',
+    'DrugAI (prototype)', 'Healthcare product portfolio', 'Product roadmap',
   ],
   Company: ['About', 'Mission', 'Team', 'Credibility', 'Contact', 'Privacy notice'],
   Contact: [
@@ -13,7 +13,7 @@ const FOOTER_LINKS = {
 }
 
 const SECTION_IDS: Record<string, string> = {
-  'DrugAI (prototype)':'#drugai','Clinical AI research':'#research','Product roadmap':'#research',
+  'DrugAI (prototype)':'#drugai','Healthcare product portfolio':'#research','Product roadmap':'#research',
   'About':'#about','Mission':'#mission','Team':'#team','Credibility':'#credibility','Contact':'#contact',
 }
 
@@ -32,7 +32,7 @@ export default function Footer() {
               <span className="font-mono font-bold text-white tracking-[0.1em] text-[14px]">SHOLYTICS</span>
             </div>
             <p className="text-[13px] text-slate-500 leading-[1.75] mb-5">
-              Medication supply intelligence for pharmacy and procurement teams, starting with the DrugAI prototype, plus a clinical AI research track with university partners.
+              Independent healthcare operations and research software prototypes. Explore our development portfolio; no product is represented as clinically validated.
             </p>
             <div className="rounded-lg px-4 py-3 border" style={{ background:'rgba(249,115,22,0.05)', borderColor:'rgba(249,115,22,0.15)' }}>
               <p className="font-mono text-[10px] text-orange-500 tracking-widest uppercase mb-1">Legal</p>

@@ -12,7 +12,7 @@ export default function Research() {
         >
           <p className="font-mono text-xs text-orange-500 tracking-[0.12em] uppercase mb-3">Product Roadmap</p>
           <h2 className="font-bold leading-tight tracking-tight mb-4" style={{ fontSize:'clamp(2rem,4vw,3rem)' }}>
-            One product in development.<br/>A research roadmap behind it.
+            A growing healthcare portfolio.<br/>Built and tested independently.
           </h2>
           <p className="text-slate-400 text-[17px] max-w-xl leading-relaxed">
             We build one product at a time and expand only when users show us it is worth it.
@@ -46,7 +46,7 @@ export default function Research() {
                 >{div.status}</span>
               </div>
               <h3 className="text-[19px] font-bold mb-3 leading-tight">{div.name}</h3>
-              <p className="text-[13px] text-slate-400 leading-[1.75] mb-4">{div.desc}</p>
+              <p className="text-[13px] text-slate-400 leading-[1.75] mb-4">{div.desc}</p>\n              {div.repo && <a href={'https://github.com/Dav-lopez/'+div.repo} target="_blank" rel="noopener noreferrer" className="inline-block mb-4 text-[13px] text-orange-400 underline underline-offset-4">View development repository</a>}
               <p
                 className="text-[12px] leading-relaxed px-3 py-2.5 rounded-lg"
                 style={{ color:'#FB923C', background:'rgba(249,115,22,0.06)', borderLeft:'2px solid #F97316' }}
